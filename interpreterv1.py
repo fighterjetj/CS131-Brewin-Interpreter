@@ -31,12 +31,18 @@ class Interpreter(InterpreterBase):
         self.function_map = {}
         self.var_map = {}
         self.preloaded_funcs = set()
+        self.trace_output = trace_output
 
     # Function we run at the beginning to load any functions we hardcode in (e.g. print)
     def preload_funcs(self):
         # Loading the print function
         self.preloaded_funcs.add(Interpreter.PRINT)
         self.function_map[Interpreter.PRINT] = Element(Interpreter.FUNCTION, name=Interpreter.PRINT, statement=[])
+
+        if self.trace_output:
+            print("Preloaded functions:")
+            for function_name in self.preloaded_funcs:
+                print(function_name)
     
     def run(self, program):
         ast = parse_program(program)
@@ -51,14 +57,19 @@ class Interpreter(InterpreterBase):
         # Mapping function names to function nodes
         for function in root_node.get(Interpreter.FUNCTION):
             self.function_map[function.get(Interpreter.NAME)] = function
+            if self.trace_output:
+                print(f"Loaded function {function.get(Interpreter.NAME)}")
         if Interpreter.MAIN_FUNC_NAME not in self.function_map:
             super().error(ErrorType.NAME_ERROR, f"Main function {Interpreter.MAIN_FUNC_NAME} not found")
+        if self.trace_output:
+            print("Running main")
         # Now we can evaluate the program
         self.run_function(Interpreter.MAIN_FUNC_NAME, [])
             
 
     def run_function(self, function_name, args) -> None:
-        # print(f"Running {function_name} with args {[str(arg) for arg in args]}")
+        if self.trace_output:
+            print(f"Running {function_name} with args {[str(arg) for arg in args]}")
         # Checking that the function exists
         if function_name not in self.function_map:
             super().error(ErrorType.NAME_ERROR, f"Function {function_name} not found")
@@ -68,6 +79,8 @@ class Interpreter(InterpreterBase):
         eval_args = []
         for arg in args:
             eval_args.append(self.evaluate_node(arg))
+        if self.trace_output:
+            print(f"Evaluated args: {[str(arg) for arg in eval_args]}")
         
         # Preloaded functions are treated differently than user-defined functions
         if function.get(Interpreter.NAME) in self.preloaded_funcs:
@@ -86,6 +99,8 @@ class Interpreter(InterpreterBase):
                 return self.evaluate_node(statement.get(Interpreter.EXPRESSION))
             """
             self.run_statement(statement)
+        if self.trace_output:
+            print(f"Finished running {function_name}")
     
 
     # We run the statement by checking its type and executing the appropriate code
@@ -101,6 +116,8 @@ class Interpreter(InterpreterBase):
     
     # Assignment makes use of our var_map to store the variable name and its value, which is the evaluation of the expression
     def run_assignment(self, statement) -> None:
+        if self.trace_output:
+            print(f"Running assignment {statement}")
         self.var_map[statement.get(Interpreter.NAME)] = self.evaluate_node(statement.get(Interpreter.EXPRESSION))
         
     

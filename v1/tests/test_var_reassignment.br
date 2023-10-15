@@ -1,0 +1,14 @@
+func main() {
+    x = 7;
+    y = 3;
+    y = 10;
+    print("The sum of ", x, " and ", y, " is ", (x + y));
+}
+
+/*
+*IN*
+*IN*
+*OUT*
+The sum of 7 and 10 is 17
+*OUT*
+*/

@@ -7,6 +7,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_nested_parens",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_print_const",
             "score": 1,
             "max_score": 1,
@@ -31,7 +37,19 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_var_reassignment",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Incorrectness | test_invalid_operands1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_no_main_function",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"

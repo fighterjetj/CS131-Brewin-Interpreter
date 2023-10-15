@@ -1,0 +1,9 @@
+func not_main() {
+    print("This isn't the main!");
+}
+
+/*
+*OUT*
+ErrorType.NAME_ERROR
+*OUT*
+*/
