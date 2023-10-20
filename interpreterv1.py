@@ -23,8 +23,9 @@ class Interpreter(InterpreterBase):
     STATEMENT_TYPES = [ASSIGNMENT, FUNC_CALL]
     EXPRESSION_TYPES = [FUNC_CALL, ADD, SUBTRACT]
     VALUE_TYPES = [INT, STR]
+    INPUT = "inputi"
     PRINT = "print"
-    PRELOADED_FUNCS = [PRINT]
+    PRELOADED_FUNCS = [PRINT, INPUT]
 
     def __init__(self, console_output=True, inp=None, trace_output=False):
         super().__init__(console_output, inp)
@@ -38,6 +39,9 @@ class Interpreter(InterpreterBase):
         # Loading the print function
         self.preloaded_funcs.add(Interpreter.PRINT)
         self.function_map[Interpreter.PRINT] = Element(Interpreter.FUNCTION, name=Interpreter.PRINT, statement=[])
+
+        self.preloaded_funcs.add(Interpreter.INPUT)
+        self.function_map[Interpreter.INPUT] = Element(Interpreter.FUNCTION, name=Interpreter.INPUT, statement=[])
 
         if self.trace_output:
             print("Preloaded functions:")
@@ -67,7 +71,7 @@ class Interpreter(InterpreterBase):
         self.run_function(Interpreter.MAIN_FUNC_NAME, [])
             
 
-    def run_function(self, function_name, args) -> None:
+    def run_function(self, function_name, args):
         if self.trace_output:
             print(f"Running {function_name} with args {[str(arg) for arg in args]}")
         # Checking that the function exists
@@ -87,6 +91,16 @@ class Interpreter(InterpreterBase):
             match function.get(Interpreter.NAME):
                 case Interpreter.PRINT:
                     super().output("".join([str(arg.get(Interpreter.VALUE)) for arg in eval_args]))
+                case Interpreter.INPUT:
+                    if len(args) > 1:
+                        return super().error(ErrorType.NAME_ERROR, "Inputi function takes at most one argument")
+                    if len(args) == 1:
+                        super().output(str(arg.get(Interpreter.VALUE)))
+                    input_val = super().get_input()
+                    if input_val.isnumeric():
+                        return Element(Interpreter.INT, val=int(input_val))
+                    else:
+                        super.error(ErrorType.TYPE_ERROR, f"Inputi function expected int, got {input_val}")
                 case _:
                     super().error(ErrorType.TYPE_ERROR, f"Preloaded function {function.get(Interpreter.NAME)} not implemented")
             return
@@ -130,6 +144,8 @@ class Interpreter(InterpreterBase):
 
         # Variables are just looked up in the var_map - they are executed upon assignment, not lazily upon use, so we don't need to worry about them much
         elif type == Interpreter.VARIABLE:
+            if (node.get(Interpreter.NAME) not in self.var_map):
+                super().error(ErrorType.NAME_ERROR, f"Variable {node.get(Interpreter.NAME)} not found")
             return self.var_map[node.get(Interpreter.NAME)]
         
         # Expressions are evaluated recursively - if it's a function, we'll run the function, but otherwise we just evaluate the operands recursively until we get returned values which are then used

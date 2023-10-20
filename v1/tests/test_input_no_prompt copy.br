@@ -1,0 +1,13 @@
+func main() {
+    x = inputi();
+    print(x);
+}
+
+/*
+*IN*
+10
+*IN*
+*OUT*
+10
+*OUT*
+*/

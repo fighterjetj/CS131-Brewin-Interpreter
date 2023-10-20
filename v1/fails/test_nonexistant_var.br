@@ -1,0 +1,11 @@
+func main() {
+  a = 5;
+  b = "foo";
+  c = a + d;
+}
+
+/*
+*OUT*
+ErrorType.NAME_ERROR
+*OUT*
+*/

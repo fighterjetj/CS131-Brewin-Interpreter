@@ -1,0 +1,13 @@
+func main() {
+    print(inputi("Yello"));
+}
+
+/*
+*IN*
+10
+*IN*
+*OUT*
+Yello
+10
+*OUT*
+*/
