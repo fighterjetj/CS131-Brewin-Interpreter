@@ -43,8 +43,16 @@ class Interpreter(InterpreterBase):
         if not name:
             super().error(ErrorType.FAULT_ERROR, f"No name associated with the function {str(function)}")
             return
+        num_args = len(function.get(Interpreter.ARGS))
+        # For each function, we store it as a map between the function name and a map between the number of arguments and the function itself
+        # This allows us to overload functions
+        if name in self.function_map:
+            # Overloading the function
+            self.function_map[name][num_args] = function
+            if self.trace_output:
+                print(f"Function {name} already exists, overloading it")
         
-        self.function_map[name] = function
+        self.function_map[name] = {num_args: function}
         if self.trace_output:
             print(f"Function {name} loaded")
 
@@ -76,11 +84,13 @@ class Interpreter(InterpreterBase):
             if self.trace_output:
                 print(f"Preloaded function {str(func)}")
     
-    def get_func(self, name):
+    def get_func(self, name, num_args):
         if not name in self.function_map:
             super().error(ErrorType.NAME_ERROR, f"No such function as {name}")
             return None
-        return self.function_map[name]
+        if not num_args in self.function_map[name]:
+            super().error(ErrorType.NAME_ERROR, f"No such function as {name} with {num_args} arguments")
+        return self.function_map[name][num_args]
 
     def is_preloaded(self, function_name):
         return function_name in self.preloaded_funcs
@@ -130,7 +140,8 @@ class Interpreter(InterpreterBase):
     def run_function(self, function_name, args):
         if self.trace_output:
             print(f"Running {function_name} with args {str(args)}")
-        function = self.get_func(function_name)
+        num_args = len(args)
+        function = self.get_func(function_name, num_args)
         # Evaluating the arguments before running the function
         eval_args = []
         for arg in args:
