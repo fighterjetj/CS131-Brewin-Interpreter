@@ -4,7 +4,8 @@ from element import Element
 
 class Interpreter(InterpreterBase):
     
-    FUNCTION = "functions"
+    FUNCTIONS = "functions"
+    FUNCTION = "func"
     VALUE = "val"
     NAME = "name"
     MAIN_FUNC_NAME = "main"
@@ -33,36 +34,100 @@ class Interpreter(InterpreterBase):
         self.var_map = {}
         self.preloaded_funcs = set()
         self.trace_output = trace_output
+    
+    def get_func_name(self, function):
+        return function.get(Interpreter.NAME)
+    
+    def load_func(self, function: Element) -> None:
+        # Checking we were passed a function element
+        if function.elem_type != Interpreter.FUNCTION:
+            super().error(ErrorType.TYPE_ERROR, f"Tried to load node {str(function)}, which is not a function but a {function.elem_type}")
+            return
+        
+        name = self.get_func_name(function)
+        if not name:
+            super().error(ErrorType.FAULT_ERROR, f"No name associated with the function {str(function)}")
+            return
+        if name in self.function_map:
+            if self.trace_output:
+                print(f"Function {name} already exists, overwriting it")
+        
+        self.function_map[name] = function
+        if self.trace_output:
+            print(f"Function {name} loaded")
+
+    def preload_func(self, function: Element) -> None:
+        if function.elem_type != Interpreter.FUNCTION:
+            super().error(ErrorType.TYPE_ERROR, f"Tried to load node {str(function)}, which is not a function")
+            return
+        name = self.get_func_name(function)
+        if not name:
+            super().error(ErrorType.FAULT_ERROR, f"No name associated with the function {str(function)}")
+            return
+        print(f"Beginning to preload {str(function)}")
+        self.preloaded_funcs.add(name)
+        self.load_func(function)
 
     # Function we run at the beginning to load any functions we hardcode in (e.g. print)
-    def preload_funcs(self):
-        # Loading the print function
-        self.preloaded_funcs.add(Interpreter.PRINT)
-        self.function_map[Interpreter.PRINT] = Element(Interpreter.FUNCTION, name=Interpreter.PRINT, statement=[])
+    def preload_funcs(self) -> None:
+        # Constructing the print and inputi functions
+        print_statements = [] # No statements - currently preloaded funcs are hardcoded
+        input_statements = []
 
-        self.preloaded_funcs.add(Interpreter.INPUT)
-        self.function_map[Interpreter.INPUT] = Element(Interpreter.FUNCTION, name=Interpreter.INPUT, statement=[])
+        print_func = Element(Interpreter.FUNCTION, name=Interpreter.PRINT, statement = print_statements)
+        input_func = Element(Interpreter.FUNCTION, name=Interpreter.INPUT, statement = input_statements)
+        
+        funcs_to_load = [print_func, input_func]
 
-        if self.trace_output:
-            print("Preloaded functions:")
-            for function_name in self.preloaded_funcs:
-                print(function_name)
+        for func in funcs_to_load:
+            self.preload_func(func)
+            if self.trace_output:
+                printf(f"Preloaded function {str(func)}")
     
-    def run(self, program):
+    def get_func(self, name):
+        if not name in self.function_map:
+            super().error(ErrorType.NAME_ERROR, f"No such function as {name}")
+            return None
+        return self.function_map[name]
+
+    def is_preloaded(self, function_name):
+        return function_name in self.preloaded_funcs
+    
+    def run_preloaded_func(self, function, args):
+        if self.trace_output:
+            print(f"Running preloaded function {str(function)} with args {str(args)}")
+        match self.get_func_name(function):
+                case Interpreter.PRINT:
+                    super().output("".join([str(arg.get(Interpreter.VALUE)) for arg in args]))
+                case Interpreter.INPUT:
+                    if len(args) > 1:
+                        return super().error(ErrorType.NAME_ERROR, "Inputi function takes at most one argument")
+                    if len(args) == 1:
+                        super().output(str(args[0].get(Interpreter.VALUE)))
+                    input_val = super().get_input()
+                    if input_val.isnumeric():
+                        return Element(Interpreter.INT, val=int(input_val))
+                    else:
+                        super.error(ErrorType.TYPE_ERROR, f"Inputi function expected int, got {input_val}")
+                        # return Element(Interpreter.STRING, val=input_val)
+                case _:
+                    super().error(ErrorType.TYPE_ERROR, f"Preloaded function {function.get(Interpreter.NAME)} not implemented")
+            
+    
+    def run(self, program: str) -> None:
         ast = parse_program(program)
         root_node = ast
         # The root_node should be a program node
         if root_node.elem_type != Interpreter.PROGRAM_DEF:
             super().error(ErrorType.TYPE_ERROR, "Program node not found")
             return
+        # Clearing the variables and functions, in case this isn't the first invocation of the interpreter
         self.function_map = {}
         self.var_map = {}
         self.preload_funcs()
-        # Mapping function names to function nodes
-        for function in root_node.get(Interpreter.FUNCTION):
-            self.function_map[function.get(Interpreter.NAME)] = function
-            if self.trace_output:
-                print(f"Loaded function {function.get(Interpreter.NAME)}")
+        # Loading functions
+        for function in root_node.get(Interpreter.FUNCTIONS):
+            self.load_func(function)
         if Interpreter.MAIN_FUNC_NAME not in self.function_map:
             super().error(ErrorType.NAME_ERROR, f"Main function {Interpreter.MAIN_FUNC_NAME} not found")
         if self.trace_output:
@@ -73,13 +138,11 @@ class Interpreter(InterpreterBase):
 
     def run_function(self, function_name, args):
         if self.trace_output:
-            print(f"Running {function_name} with args {[str(arg) for arg in args]}")
-        # Checking that the function exists
-        if function_name not in self.function_map:
-            super().error(ErrorType.NAME_ERROR, f"Function {function_name} not found")
-            return
-        function = self.function_map[function_name]
+            print(f"Running {function_name} with args {str(args)}")
+        function = self.get_func(function_name)
         # We may need to also check if the correct number/type of args were passed - for right now, since we don't have to fully implement functions, we'll just ignore this
+        
+        # Evaluating the arguments before running the function
         eval_args = []
         for arg in args:
             eval_args.append(self.evaluate_node(arg))
@@ -87,23 +150,8 @@ class Interpreter(InterpreterBase):
             print(f"Evaluated args: {[str(arg) for arg in eval_args]}")
         
         # Preloaded functions are treated differently than user-defined functions
-        if function.get(Interpreter.NAME) in self.preloaded_funcs:
-            match function.get(Interpreter.NAME):
-                case Interpreter.PRINT:
-                    super().output("".join([str(arg.get(Interpreter.VALUE)) for arg in eval_args]))
-                case Interpreter.INPUT:
-                    if len(args) > 1:
-                        return super().error(ErrorType.NAME_ERROR, "Inputi function takes at most one argument")
-                    if len(args) == 1:
-                        super().output(str(arg.get(Interpreter.VALUE)))
-                    input_val = super().get_input()
-                    if input_val.isnumeric():
-                        return Element(Interpreter.INT, val=int(input_val))
-                    else:
-                        super.error(ErrorType.TYPE_ERROR, f"Inputi function expected int, got {input_val}")
-                case _:
-                    super().error(ErrorType.TYPE_ERROR, f"Preloaded function {function.get(Interpreter.NAME)} not implemented")
-            return
+        if self.is_preloaded(function_name):
+            return self.run_preloaded_func(function, eval_args)
 
         # Executing all statements in the function
         for statement in function.get(Interpreter.STATEMENT):
