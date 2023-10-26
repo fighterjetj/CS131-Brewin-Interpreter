@@ -9,7 +9,7 @@ class Interpreter(InterpreterBase):
         super().__init__(console_output, inp)
         self.function_map = {}
         self.preloaded_funcs = set()
-        self.trace_output = False
+        self.trace_output = True
     
     def error(self, error_type: ErrorType, message: str) -> None:
         super().error(error_type, message)
@@ -49,13 +49,13 @@ class Interpreter(InterpreterBase):
         if name in self.function_map:
             # Overloading the function
             if self.trace_output:
-                print(f"Function {name} already exists, overloading it")
+                print(f"Function {name} already exists: {self.function_map[name]}, overloading it")
             if num_args in self.function_map[name]:
                 if self.trace_output:
                     print(f"Function {name} with {num_args} arguments already exists!  Overwriting it")
             self.function_map[name][num_args] = function
-        
-        self.function_map[name] = {num_args: function}
+        else:
+            self.function_map[name] = {num_args: function}
         if self.trace_output:
             print(f"Function {name} loaded")
 
@@ -122,6 +122,7 @@ class Interpreter(InterpreterBase):
             self.error(ErrorType.NAME_ERROR, f"Main function {MAIN_FUNC_NAME} not found")
         if self.trace_output:
             print("All functions loaded")
+            print(f"Loaded function map: {str(self.function_map)}")
             print("Running main")
         # Now we can evaluate the program - assume it has no arguments passed
         main_func_call = Element(InterpreterBase.FCALL_DEF, name=MAIN_FUNC_NAME, args=[])

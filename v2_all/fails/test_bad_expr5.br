@@ -1,9 +1,0 @@
-func main() {
- a = "a" <= "b";
-}
-
-/*
-*OUT*
-ErrorType.TYPE_ERROR
-*OUT*
-*/

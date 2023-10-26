@@ -6,7 +6,7 @@ class Statement:
     def __init__(self, interpreter, parent_statement, statement_node: Element):
         self.parent_statement = parent_statement
         self.type = statement_node.elem_type
-        self.trace_output = interpreter.trace_output
+        self.trace_output = False # interpreter.trace_output
         self.interpreter = interpreter
         self.statement_node = statement_node
         if not statement_node.elem_type in STATEMENT_TYPES:
@@ -24,6 +24,7 @@ class Statement:
     def error(self, error_type: ErrorType, message: str) -> None:
         if self.trace_output:
             self.dump_info()
+        # self.dump_info()
         self.interpreter.error(error_type, message)
 
 
@@ -32,21 +33,18 @@ class Statement:
         print(f"Statement node: {str(self.statement_node)}")
         print(f"Var map: {self.var_map}")
         if self.parent_statement:
-            print("Printing my parent statement")
+            print("\nPrinting my parent statement")
             self.parent_statement.dump_info()
     # We recursively check if the variable exists in the current statement or any parent statements
     # We stop when we reach the invoking function
     def get_var_scope(self, name: str):
         if name in self.var_map:
             return self
-        if self.type == InterpreterBase.FCALL_DEF:
-            return None
         # Recursively get the scope
         if not self.parent_statement:
             if self.trace_output:
-                self.error(ErrorType.FAULT_ERROR, f"The root of this statement tree has been reached and it has type {self.type} instead of {InterpreterBase.FCALL_DEF}")
+                print("Reached the root statement!")
             return None
-        
         return self.parent_statement.get_var_scope(name)
 
     def get_var(self, name: str) -> Element:
@@ -119,17 +117,17 @@ class Statement:
             return NIL_VAL
         exp_type = expression.elem_type
         if exp_type == ADD:
-            return Element(type1, val=val1.get(VALUE) + val2.get(VALUE))
+            return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) + val2.get(VALUE))
         if exp_type == SUBTRACT:
-            return Element(type1, val=val1.get(VALUE) - val2.get(VALUE))
+            return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) - val2.get(VALUE))
         if exp_type == MULTIPLY:
-            return Element(type1, val=val1.get(VALUE) * val2.get(VALUE))
+            return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) * val2.get(VALUE))
         if exp_type == DIVIDE:
-            return Element(type1, val=int(val1.get(VALUE) / val2.get(VALUE)))
+            return Element(InterpreterBase.INT_DEF, val=int(val1.get(VALUE) / val2.get(VALUE)))
         if exp_type == OR:
-            return Element(type1, val=(val1.get(VALUE) or val2.get(VALUE)))
+            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) or val2.get(VALUE)))
         if exp_type == AND:
-            return Element(type1, val=(val1.get(VALUE) and val2.get(VALUE)))
+            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) and val2.get(VALUE)))
         self.error(ErrorType.TYPE_ERROR, f"Binary operator {expression.elem_type} not implemented")
         return NIL_VAL
     
@@ -155,17 +153,17 @@ class Statement:
             return NIL_VAL
         exp_type = expression.elem_type
         if exp_type == EQUALS:
-            return Element(type1, val=(val1.get(VALUE) == val2.get(VALUE)))
+            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE)))
         if exp_type == NOT_EQUALS:
-            return Element(type1, val=(val1.get(VALUE) != val2.get(VALUE)))
+            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE)))
         if exp_type == LESS_THAN:
-            return Element(type1, val=(val1.get(VALUE) < val2.get(VALUE)))
+            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) < val2.get(VALUE)))
         if exp_type == LESS_THAN_EQUALS:
-            return Element(type1, val=(val1.get(VALUE) <= val2.get(VALUE)))
+            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) <= val2.get(VALUE)))
         if exp_type == GREATER_THAN:
-            return Element(type1, val=(val1.get(VALUE) > val2.get(VALUE)))
+            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) > val2.get(VALUE)))
         if exp_type == GREATER_THAN_EQUALS:
-            return Element(type1, val=(val1.get(VALUE) >= val2.get(VALUE)))
+            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) >= val2.get(VALUE)))
         self.error(ErrorType.TYPE_ERROR, f"Comparison operator {expression.elem_type} not implemented")
         return NIL_VAL
             
@@ -189,7 +187,7 @@ class Statement:
                 return self.evaluate_unary_operation(expression)
             if expression_type in BINARY_OPERATORS:
                 return self.evaluate_binary_operation(expression)
-            if expression_type in COMPARSION_OPERATORS:
+            if expression_type in COMPARISON_OPERATORS:
                 return self.evaluate_comparison_operation(expression)
         self.error(ErrorType.TYPE_ERROR, f"Expression type {expression_type} not recognized")
         return NIL_VAL
@@ -280,14 +278,17 @@ class Statement:
             print(f"Running function {function_name} with {num_args} arguments")
         # Running the function
         statements = function.get(STATEMENTS)
-        return self.run_statements(statements)
+        returned_val = self.run_statements(statements)
+        if returned_val.elem_type == InterpreterBase.RETURN_DEF:
+            return returned_val.get(RETURNED)
+        return NIL_VAL
     
     def eval_conditional(self, condition: Element) -> bool:
         if self.trace_output:
             print(f"Evaluating conditional {str(condition)}")
         condition = self.evaluate_expression(condition)
         if condition.elem_type != InterpreterBase.BOOL_DEF:
-            self.error(ErrorType.TYPE_ERROR, f"Expected bool for if condition, got {condition.elem_type}")
+            self.error(ErrorType.TYPE_ERROR, f"Expected bool for condition, got {condition.elem_type}")
             return False
         return condition.get(VALUE)
 
@@ -320,7 +321,7 @@ class Statement:
             print(f"Running return {str(self.statement_node)}")
         return_val = self.statement_node.get(EXPRESSION)
         return_val = self.evaluate_expression(return_val)
-        return Element(InterpreterBase.RETURN_DEF, expression=return_val)
+        return Element(InterpreterBase.RETURN_DEF, returned=return_val)
 
     def run(self) -> Element:
         if self.trace_output:
