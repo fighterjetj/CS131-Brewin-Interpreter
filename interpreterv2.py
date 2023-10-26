@@ -9,22 +9,39 @@ class Interpreter(InterpreterBase):
         super().__init__(console_output, inp)
         self.function_map = {}
         self.preloaded_funcs = set()
-        self.trace_output = trace_output
+        self.trace_output = True
+    
+    def error(self, error_type: ErrorType, message: str) -> None:
+        super().error(error_type, message)
+        if self.trace_output:
+            print(f"Error: {message}")
+    
+    def output(self, message: str) -> None:
+        super().output(message)
+        if self.trace_output:
+            print(f"Output: {message}")
+    
+    def get_input(self) -> str:
+        if self.trace_output:
+            print("Input: ")
+        return super().get_input()
     
     def get_func_name(self, function: Element):
         if function.elem_type != InterpreterBase.FUNC_DEF:
-            super().error(ErrorType.TYPE_ERROR, f"Tried to get name of node {str(function)}, which is not a function but a {function.elem_type}")
+            self.error(ErrorType.TYPE_ERROR, f"Tried to get name of node {str(function)}, which is not a function but a {function.elem_type}")
             return None
         return function.get(NAME)
     
     def load_func(self, function: Element) -> None:
+        if self.trace_output:
+            print(f"Beginning to load {str(function)}")
         # Checking we were passed a function element
         if function.elem_type != InterpreterBase.FUNC_DEF:
-            super().error(ErrorType.TYPE_ERROR, f"Tried to load node {str(function)}, which is not a function but a {function.elem_type}")
+            self.error(ErrorType.TYPE_ERROR, f"Tried to load node {str(function)}, which is not a function but a {function.elem_type}")
             return
         name = self.get_func_name(function)
         if not name:
-            super().error(ErrorType.FAULT_ERROR, f"No name associated with the function {str(function)}")
+            self.error(ErrorType.FAULT_ERROR, f"No name associated with the function {str(function)}")
             return
         num_args = len(function.get(ARGS))
         # For each function, we store it as a map between the function name and a map between the number of arguments and the function itself
@@ -43,19 +60,22 @@ class Interpreter(InterpreterBase):
             print(f"Function {name} loaded")
 
     def preload_func(self, function: Element) -> None:
+        if self.trace_output:
+            print(f"Preloading {str(function)}")
         if function.elem_type != InterpreterBase.FUNC_DEF:
-            super().error(ErrorType.TYPE_ERROR, f"Tried to load node {str(function)}, which is not a function")
+            self.error(ErrorType.TYPE_ERROR, f"Tried to load node {str(function)}, which is not a function")
             return
         name = self.get_func_name(function)
         if not name:
-            super().error(ErrorType.FAULT_ERROR, f"No name associated with the function {str(function)}")
+            self.error(ErrorType.FAULT_ERROR, f"No name associated with the function {str(function)}")
             return
-        print(f"Beginning to preload {str(function)}")
         self.preloaded_funcs.add(name)
-        self.load_func(function)
+        # self.load_func(function)
 
     # Function we run at the beginning to load any functions we hardcode in (e.g. print)
     def preload_funcs(self) -> None:
+        if self.trace_output:
+            print("Preloading functions")
         # Constructing the print and inputi functions
         print_statements = [Element(elem_type=PRINT)]
         inputi_statements = [Element(elem_type=INPUTI)]
@@ -74,10 +94,10 @@ class Interpreter(InterpreterBase):
     
     def get_func(self, name, num_args):
         if not name in self.function_map:
-            super().error(ErrorType.NAME_ERROR, f"No such function as {name}")
+            self.error(ErrorType.NAME_ERROR, f"No such function as {name}")
             return None
         if not num_args in self.function_map[name]:
-            super().error(ErrorType.NAME_ERROR, f"No such function as {name} with {num_args} arguments")
+            self.error(ErrorType.NAME_ERROR, f"No such function as {name} with {num_args} arguments")
         return self.function_map[name][num_args]
 
     def is_preloaded(self, function_name):
@@ -89,7 +109,7 @@ class Interpreter(InterpreterBase):
         root_node = ast
         # The root_node should be a program node
         if root_node.elem_type != InterpreterBase.PROGRAM_DEF:
-            super().error(ErrorType.TYPE_ERROR, "Program node not found")
+            self.error(ErrorType.TYPE_ERROR, "Program node not found")
             return
         # Clearing the variables and functions, in case this isn't the first invocation of the interpreter
         self.function_map = {}
@@ -99,9 +119,11 @@ class Interpreter(InterpreterBase):
         for function in root_node.get(FUNCTIONS):
             self.load_func(function)
         if MAIN_FUNC_NAME not in self.function_map:
-            super().error(ErrorType.NAME_ERROR, f"Main function {MAIN_FUNC_NAME} not found")
+            self.error(ErrorType.NAME_ERROR, f"Main function {MAIN_FUNC_NAME} not found")
         if self.trace_output:
+            print("All functions loaded")
             print("Running main")
         # Now we can evaluate the program - assume it has no arguments passed
         main_func_call = Element(InterpreterBase.FCALL_DEF, name=MAIN_FUNC_NAME, args=[])
         main_statement = Statement(self, None, main_func_call)
+        main_statement.run()
