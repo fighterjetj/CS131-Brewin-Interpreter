@@ -5,7 +5,8 @@ FUNCTIONS = "functions"
 VALUE = "val"
 NAME = "name"
 MAIN_FUNC_NAME = "main"
-STATEMENT = "statements"
+STATEMENTS = "statements"
+ELSE_STATEMENTS = "else_statements"
 EXPRESSION = "expression"
 ASSIGNMENT = "="
 ADD = "+"
@@ -45,3 +46,4 @@ STATEMENT_TYPES += PRELOADED_FUNCS
 EXPRESSION_TYPES = [InterpreterBase.FCALL_DEF] + OPERATORS
 VALUE_TYPES = [InterpreterBase.INT_DEF, InterpreterBase.STRING_DEF, InterpreterBase.BOOL_DEF, InterpreterBase.NIL_DEF]
 NIL_VAL = Element(InterpreterBase.NIL_DEF)
+CONDITION = "condition"

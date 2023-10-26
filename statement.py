@@ -24,6 +24,14 @@ class Statement:
         self.function_map = interpreter.function_map
         self.var_map = {}
 
+    def get_statement_scope(self):
+        if self.type == InterpreterBase.FUNC_DEF:
+            return self
+        if not self.parent_statement:
+            if self.trace_output:
+                print(f"All non-function statements should have a parent statement, but this one doesn't!  Very interesting...")
+            return None
+        return self.parent_statement.get_statement_scope()
     # We recursively check if the variable exists in the current statement or any parent statements
     # We stop when we reach the invoking function
     def get_var_scope(self, name: str):
@@ -155,6 +163,8 @@ class Statement:
                 return self.evaluate_unary_operation(expression)
             if expression_type in BINARY_OPERATORS:
                 return self.evaluate_binary_operation(expression)
+            if expression_type in COMPARSION_OPERATORS:
+                return self.evaluate_comparison_operation(expression)
             
 
     
@@ -166,7 +176,13 @@ class Statement:
     # Preloaded functions
     def run_print(self) -> None:
         args = self.statement_node.get(ARGS)
-        self.interpreter.super().output("".join([str(arg.get(VALUE)) for arg in args]))
+        output_str = ""
+        for arg in args:
+            if type(arg) == bool:
+                output_str += str(arg).lower()
+            else:
+                output_str += str(arg)
+        self.interpreter.super().output(output_str)
     
     def get_input(self):
         args = self.statement_node.get(ARGS)
@@ -188,6 +204,55 @@ class Statement:
     def run_inputs(self) -> Element:
         input_val = self.get_input()
         return Element(InterpreterBase.STRING_DEF, value=input_val)
+    
+    def run_statements(self, statements) -> Element:
+        for statement in statements:
+            curr_statement = Statement(self.interpreter, self, statement)
+            returned_val = curr_statement.run()
+            if returned_val.elem_type == InterpreterBase.RETURN_DEF:
+                return returned_val
+        return NIL_VAL
+
+    def run_function(self) -> Element:
+        args = self.statement_node.get(ARGS)
+        num_args = len(args)
+        # Getting the function from the interpreter
+        function_name = self.statement_node.get(NAME)
+        function = self.interpreter.get_func(function_name, num_args)
+        # arg names
+        arg_names = function.get(ARGS)
+        for i in range(len(args)):
+            self.var_map[arg_names[i].get(NAME)] = self.evaluate_expression(args[i])
+        if self.trace_output:
+            print(f"Running function {function_name} with {num_args} arguments")
+        # Running the function
+        statements = function.get(STATEMENTS)
+        return self.run_statements(statements)
+    
+    def run_if(self) -> None:
+        condition = self.statement_node.get(CONDITION)
+        condition = self.evaluate_expression(condition)
+        statements = []
+        if condition.get(VALUE):
+            statements = self.statement_node.get(STATEMENTS)
+        else:
+            statements = self.statement_node.get(ELSE_STATEMENTS)
+        if statements:
+            return self.run_statements(statements)
+    
+    def run_while(self) -> None:
+        condition = self.statement_node.get(CONDITION)
+        statements = self.statement_node.get(STATEMENTS)
+        # Constantly reevaluate the condition and run the statements until the condition is false
+        while self.evaluate_expression(condition).get(VALUE):
+            returned_val = self.run_statements(statements)
+            if returned_val.elem_type == InterpreterBase.RETURN_DEF:
+                return returned_val
+    
+    def run_return(self) -> Element:
+        return_val = self.statement_node.get(EXPRESSION)
+        return_val = self.evaluate_expression(return_val)
+        return Element(InterpreterBase.RETURN_DEF, expression=return_val)
 
     def run(self) -> Element:
         # Match statements in Python are stupid - if you match a var it will try and store it's value into it?
@@ -205,6 +270,12 @@ class Statement:
             # Statements that are not for preloaded functions
             case str(ASSIGNMENT):
                 self.run_assignment()
+            case str(InterpreterBase.FUNC_DEF):
+                return self.run_function()
+            case str(InterpreterBase.IF_DEF):
+                return self.run_if()
+            case str(InterpreterBase.WHILE_DEF):
+                return self.run_while()
             case _:
                 self.interpreter.super().error(ErrorType.TYPE_ERROR, f"Statement type {self.type} not recognized")
                 return NIL_VAL

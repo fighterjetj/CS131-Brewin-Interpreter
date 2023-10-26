@@ -2,53 +2,9 @@ from intbase import InterpreterBase, ErrorType
 from brewparse import parse_program
 from element import Element
 from constants import *
+from statement import Statement
 
 class Interpreter(InterpreterBase):
-    FUNCTIONS = "functions"
-    VALUE = "val"
-    NAME = "name"
-    MAIN_FUNC_NAME = "main"
-    STATEMENT = "statements"
-    EXPRESSION = "expression"
-    ASSIGNMENT = "="
-    ADD = "+"
-    SUBTRACT = "-"
-    MULTIPLY = "*"
-    DIVIDE = "/"
-    EQUALS = "=="
-    NOT_EQUALS = "!="
-    LESS_THAN = "<"
-    LESS_THAN_EQUALS = "<="
-    GREATER_THAN = ">"
-    GREATER_THAN_EQUALS = ">="
-    OR = "||"
-    AND = "&&"
-    BINARY_INT_OPERATORS = [ADD, SUBTRACT, MULTIPLY, DIVIDE]
-    COMPARISON_INT_OPERATORS = [EQUALS, NOT_EQUALS, LESS_THAN, LESS_THAN_EQUALS, GREATER_THAN, GREATER_THAN_EQUALS]
-    UNARY_INT_OPERATORS = [InterpreterBase.NEG_DEF]
-    BINARY_BOOL_OPERATORS = [OR, AND]
-    COMPARISON_BOOL_OPERATORS = [EQUALS, NOT_EQUALS]
-    UNARY_BOOL_OPERATORS = [InterpreterBase.NOT_DEF]
-    BINARY_STRING_OPERATORS = [ADD]
-    COMPARISON_STRING_OPERATORS = [EQUALS, NOT_EQUALS]
-    UNARY_STRING_OPERATORS = []
-    BINARY_OPERATORS = BINARY_INT_OPERATORS + BINARY_BOOL_OPERATORS + BINARY_STRING_OPERATORS
-    COMPARSION_OPERATORS = COMPARISON_INT_OPERATORS + COMPARISON_BOOL_OPERATORS + COMPARISON_STRING_OPERATORS
-    UNARY_OPERATORS = UNARY_INT_OPERATORS + UNARY_BOOL_OPERATORS + UNARY_STRING_OPERATORS
-    OPERATORS = BINARY_OPERATORS + UNARY_OPERATORS
-    OPERAND_1 = "op1"
-    OPERAND_2 = "op2"
-    ARGS = "args"
-    INPUTI = "inputi"
-    INPUTS = "inputs"
-    PRINT = "print"
-    PRELOADED_FUNCS = [PRINT, INPUTI, INPUTS]
-    STATEMENT_TYPES = [ASSIGNMENT, InterpreterBase.FCALL_DEF, InterpreterBase.IF_DEF, InterpreterBase.WHILE_DEF, InterpreterBase.RETURN_DEF]
-    STATEMENT_TYPES += PRELOADED_FUNCS
-    EXPRESSION_TYPES = [InterpreterBase.FCALL_DEF] + OPERATORS
-    VALUE_TYPES = [InterpreterBase.INT_DEF, InterpreterBase.STRING_DEF, InterpreterBase.BOOL_DEF, InterpreterBase.NIL_DEF]
-    NIL_VAL = Element(InterpreterBase.NIL_DEF)
-
     def __init__(self, console_output=True, inp=None, trace_output=False):
         super().__init__(console_output, inp)
         self.function_map = {}
@@ -147,15 +103,5 @@ class Interpreter(InterpreterBase):
         if self.trace_output:
             print("Running main")
         # Now we can evaluate the program - assume it has no arguments passed
-        self.run_function(MAIN_FUNC_NAME, [])
-
-    # We run the statement by checking its type and executing the appropriate code
-    def run_statement(self, statement) -> None:
-        match statement.elem_type:
-            case str(ASSIGNMENT):
-                self.run_assignment(statement)
-            case InterpreterBase.FCALL_DEF:
-                self.run_function(statement.get(NAME), statement.get(ARGS))
-            case _:
-                super().error(ErrorType.TYPE_ERROR, "Statement type not recognized")
-                return
+        main_func_call = Element(InterpreterBase.FCALL_DEF, name=MAIN_FUNC_NAME, args=[])
+        main_statement = Statement(self, None, main_func_call)
