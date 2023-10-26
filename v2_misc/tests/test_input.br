@@ -1,0 +1,15 @@
+func main() {
+    x = inputi("Yello");
+    x = 11;
+    print(x+2);
+}
+
+/*
+*IN*
+10
+*IN*
+*OUT*
+Yello
+13
+*OUT*
+*/

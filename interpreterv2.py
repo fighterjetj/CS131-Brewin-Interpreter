@@ -9,7 +9,7 @@ class Interpreter(InterpreterBase):
         super().__init__(console_output, inp)
         self.function_map = {}
         self.preloaded_funcs = set()
-        self.trace_output = True
+        self.trace_output = False
     
     def error(self, error_type: ErrorType, message: str) -> None:
         super().error(error_type, message)
@@ -19,11 +19,11 @@ class Interpreter(InterpreterBase):
     def output(self, message: str) -> None:
         super().output(message)
         if self.trace_output:
-            print(f"Output: {message}")
+            print(f"Outputting the following: {message}")
     
     def get_input(self) -> str:
         if self.trace_output:
-            print("Input: ")
+            print("Getting Input")
         return super().get_input()
     
     def get_func_name(self, function: Element):

@@ -1,0 +1,11 @@
+func main() {
+    print("Hello World!");
+}
+
+/*
+*IN*
+*IN*
+*OUT*
+Hello World!
+*OUT*
+*/
