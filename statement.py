@@ -282,13 +282,20 @@ class Statement:
         statements = function.get(STATEMENTS)
         return self.run_statements(statements)
     
+    def eval_conditional(self, condition: Element) -> bool:
+        if self.trace_output:
+            print(f"Evaluating conditional {str(condition)}")
+        condition = self.evaluate_expression(condition)
+        if condition.elem_type != InterpreterBase.BOOL_DEF:
+            self.error(ErrorType.TYPE_ERROR, f"Expected bool for if condition, got {condition.elem_type}")
+            return False
+        return condition.get(VALUE)
+
     def run_if(self) -> Element:
         if self.trace_output:
             print(f"Running if {str(self.statement_node)}")
         condition = self.statement_node.get(CONDITION)
-        condition = self.evaluate_expression(condition)
-        statements = []
-        if condition.get(VALUE):
+        if self.eval_conditional(condition):
             statements = self.statement_node.get(STATEMENTS)
         else:
             statements = self.statement_node.get(ELSE_STATEMENTS)
@@ -302,7 +309,7 @@ class Statement:
         condition = self.statement_node.get(CONDITION)
         statements = self.statement_node.get(STATEMENTS)
         # Constantly reevaluate the condition and run the statements until the condition is false
-        while self.evaluate_expression(condition).get(VALUE):
+        while self.eval_conditional(condition):
             returned_val = self.run_statements(statements)
             if returned_val.elem_type == InterpreterBase.RETURN_DEF:
                 return returned_val
