@@ -1,0 +1,11 @@
+func main() {
+  a = 10;
+  b = 21;
+  print(b/a);
+}
+
+/*
+*OUT*
+2
+*OUT*
+*/

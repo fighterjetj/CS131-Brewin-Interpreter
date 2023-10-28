@@ -6,7 +6,7 @@ class Statement:
     def __init__(self, interpreter, parent_statement, statement_node: Element):
         self.parent_statement = parent_statement
         self.type = statement_node.elem_type
-        self.trace_output = False # interpreter.trace_output
+        self.trace_output = interpreter.trace_output
         self.interpreter = interpreter
         self.statement_node = statement_node
         if not statement_node.elem_type in STATEMENT_TYPES:
@@ -151,10 +151,17 @@ class Statement:
         if type1 == InterpreterBase.STRING_DEF and not (op_type in COMPARISON_STRING_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got a string when expected another datatype")
             return NIL_VAL
+        if type1 == InterpreterBase.NIL_DEF and not (op_type in COMPARISON_NIL_OPERATORS):
+            self.error(ErrorType.TYPE_ERROR, f"Got a nil when expected another datatype")
+            return NIL_VAL
         exp_type = expression.elem_type
         if exp_type == EQUALS:
+            if type1 == InterpreterBase.NIL_DEF:
+                return Element(InterpreterBase.BOOL_DEF, val=(val1.elem_type == val2.elem_type))
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE)))
         if exp_type == NOT_EQUALS:
+            if type1 == InterpreterBase.NIL_DEF:
+                return Element(InterpreterBase.BOOL_DEF, val=(val1.elem_type != val2.elem_type))
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE)))
         if exp_type == LESS_THAN:
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) < val2.get(VALUE)))
@@ -164,7 +171,7 @@ class Statement:
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) > val2.get(VALUE)))
         if exp_type == GREATER_THAN_EQUALS:
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) >= val2.get(VALUE)))
-        self.error(ErrorType.TYPE_ERROR, f"Comparison operator {expression.elem_type} not implemented")
+        self.error(ErrorType.TYPE_ERROR, f"Comparison operator {op_type} not implemented for type {type1}")
         return NIL_VAL
             
 
@@ -320,8 +327,10 @@ class Statement:
         if self.trace_output:
             print(f"Running return {str(self.statement_node)}")
         return_val = self.statement_node.get(EXPRESSION)
-        return_val = self.evaluate_expression(return_val)
-        return Element(InterpreterBase.RETURN_DEF, returned=return_val)
+        if return_val:
+            return_val = self.evaluate_expression(return_val)
+            return Element(InterpreterBase.RETURN_DEF, returned=return_val)
+        return NIL_VAL
 
     def run(self) -> Element:
         if self.trace_output:

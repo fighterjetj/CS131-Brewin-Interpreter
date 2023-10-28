@@ -9,7 +9,7 @@ class Interpreter(InterpreterBase):
         super().__init__(console_output, inp)
         self.function_map = {}
         self.preloaded_funcs = set()
-        self.trace_output = True
+        self.trace_output = trace_output
     
     def error(self, error_type: ErrorType, message: str) -> None:
         super().error(error_type, message)

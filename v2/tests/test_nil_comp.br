@@ -1,0 +1,19 @@
+func foo() { 
+ print("hello");
+ /* no explicit return command */
+}
+
+func bar() {
+  return;  /* no return value specified */
+}
+
+func main() {
+   val = nil;
+   if (foo() == val && bar() == nil) { print("this should print!"); }
+}
+/*
+*OUT*
+hello
+this should print!
+*OUT*
+*/
