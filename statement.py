@@ -117,6 +117,8 @@ class Statement:
             return NIL_VAL
         exp_type = expression.elem_type
         if exp_type == ADD:
+            if type1 == InterpreterBase.STRING_DEF:
+                return Element(InterpreterBase.STRING_DEF, val=val1.get(VALUE) + val2.get(VALUE))
             return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) + val2.get(VALUE))
         if exp_type == SUBTRACT:
             return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) - val2.get(VALUE))
@@ -156,12 +158,16 @@ class Statement:
             return NIL_VAL
         exp_type = expression.elem_type
         if exp_type == EQUALS:
+            """
             if type1 == InterpreterBase.NIL_DEF:
                 return Element(InterpreterBase.BOOL_DEF, val=(val1.elem_type == val2.elem_type))
+            """
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE)))
         if exp_type == NOT_EQUALS:
+            """
             if type1 == InterpreterBase.NIL_DEF:
                 return Element(InterpreterBase.BOOL_DEF, val=(val1.elem_type != val2.elem_type))
+            """
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE)))
         if exp_type == LESS_THAN:
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) < val2.get(VALUE)))

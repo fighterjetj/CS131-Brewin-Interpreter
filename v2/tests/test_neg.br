@@ -1,0 +1,10 @@
+func main() {
+    x = -1;
+    print(x);
+}
+
+/*
+*OUT*
+-1
+*OUT*
+*/

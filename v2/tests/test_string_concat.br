@@ -1,0 +1,10 @@
+func main(){
+    x = "H";
+    x = x + "ello";
+    print(x);
+}
+/*
+*OUT*
+Hello
+*OUT*
+*/

@@ -1,0 +1,13 @@
+func main() {
+    x = 10;
+    y = x + 1;
+    z = y - 2;
+    a = z * 2;
+    b = a / 4;
+    print(x,y,z,a,-b);
+}
+/*
+*OUT*
+1011918-4
+*OUT*
+*/

@@ -1,0 +1,23 @@
+func main() {
+    x = "Hello";
+    if (x == "Hello"){
+        print(x);
+    }
+    if (x != "Hello"){
+        print("Hmm");
+    }
+    y = true;
+    if (y == true) {
+        print("Yup");
+    }
+    if (y != false){
+        print("Also Yup");
+    }
+}
+/*
+*OUT*
+Hello
+Yup
+Also Yup
+*OUT*
+*/

@@ -1,0 +1,16 @@
+func foo(){
+    print("Hi");
+    return "Hello";
+}
+func main(){
+    if (((foo() == "Hello") && (1 == 2)) || (!(1==2))) {
+        print(foo());
+    }
+}
+/*
+*OUT*
+Hi
+Hi
+Hello
+*OUT*
+*/

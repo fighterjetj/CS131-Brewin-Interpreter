@@ -1,0 +1,14 @@
+func foo(){
+    print("Test");
+}
+func main(){
+    if (foo() == nil){
+        print("Yup");
+    }
+}
+/*
+*OUT*
+Test
+Yup
+*OUT*
+*/

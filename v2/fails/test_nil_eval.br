@@ -1,0 +1,14 @@
+func main(){
+    x = nil;
+    if (x) {
+        print("Yup");
+    }
+    else {
+        print("Nah");
+    }
+}
+/*
+*OUT*
+ErrorType.TYPE_ERROR
+*OUT*
+*/

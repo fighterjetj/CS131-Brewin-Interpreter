@@ -1,0 +1,11 @@
+func main(){
+    x = true;
+    if (x){
+        print("Yup");
+    }
+}
+/*
+*OUT*
+Yup
+*OUT*
+*/
