@@ -53,3 +53,4 @@ VALUE_TYPES = [InterpreterBase.INT_DEF, InterpreterBase.STRING_DEF, InterpreterB
 NIL_VAL = Element(InterpreterBase.NIL_DEF)
 CONDITION = "condition"
 RETURNED = "returned"
+RETURNED_NIL_VAL = Element(InterpreterBase.RETURN_DEF, val=NIL_VAL)

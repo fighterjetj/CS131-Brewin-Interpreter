@@ -1,0 +1,12 @@
+func main() {
+    x = 10;
+    if (x/-3 == -4){
+        print("Yay");
+    }
+}
+
+/*
+*OUT*
+Yay
+*OUT*
+*/

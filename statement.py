@@ -77,17 +77,16 @@ class Statement:
             print(f"Evaluating unary operation {str(expression)}")
         val = self.evaluate_expression(expression.get(OPERAND_1))
         type = val.elem_type
-        op_type = expression.elem_type
-        if type == InterpreterBase.INT_DEF and not (op_type in UNARY_INT_OPERATORS):
+        exp_type = expression.elem_type
+        if type == InterpreterBase.INT_DEF and not (exp_type in UNARY_INT_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got an int when expected another datatype")
             return NIL_VAL
-        if type == InterpreterBase.BOOL_DEF and not (op_type in UNARY_BOOL_OPERATORS):
+        if type == InterpreterBase.BOOL_DEF and not (exp_type in UNARY_BOOL_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype")
             return NIL_VAL
-        if type == InterpreterBase.STRING_DEF and not (op_type in UNARY_STRING_OPERATORS):
+        if type == InterpreterBase.STRING_DEF and not (exp_type in UNARY_STRING_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got a string when expected another datatype")
             return NIL_VAL
-        exp_type = expression.elem_type
         if exp_type == InterpreterBase.NEG_DEF:
             return Element(InterpreterBase.INT_DEF, val=-val.get(VALUE))
         if exp_type == InterpreterBase.NOT_DEF:
@@ -102,20 +101,19 @@ class Statement:
         val2 = self.evaluate_expression(expression.get(OPERAND_2))
         type1 = val1.elem_type
         type2 = val2.elem_type
-        op_type = expression.elem_type
+        exp_type = expression.elem_type
         if type1 != type2:
             self.error(ErrorType.TYPE_ERROR, f"Got {type1} and {type2} when expected same datatype")
             return NIL_VAL
-        if type1 == InterpreterBase.INT_DEF and not (op_type in BINARY_INT_OPERATORS):
+        if type1 == InterpreterBase.INT_DEF and not (exp_type in BINARY_INT_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got an int when expected another datatype")
             return NIL_VAL
-        if type1 == InterpreterBase.BOOL_DEF and not (op_type in BINARY_BOOL_OPERATORS):
+        if type1 == InterpreterBase.BOOL_DEF and not (exp_type in BINARY_BOOL_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype")
             return NIL_VAL
-        if type1 == InterpreterBase.STRING_DEF and not (op_type in BINARY_STRING_OPERATORS):
+        if type1 == InterpreterBase.STRING_DEF and not (exp_type in BINARY_STRING_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got a string when expected another datatype")
             return NIL_VAL
-        exp_type = expression.elem_type
         if exp_type == ADD:
             if type1 == InterpreterBase.STRING_DEF:
                 return Element(InterpreterBase.STRING_DEF, val=val1.get(VALUE) + val2.get(VALUE))
@@ -140,39 +138,34 @@ class Statement:
         val2 = self.evaluate_expression(expression.get(OPERAND_2))
         type1 = val1.elem_type
         type2 = val2.elem_type
-        op_type = expression.elem_type
+        exp_type = expression.elem_type
         if type1 != type2:
-            if not (op_type in COMPARISON_OPERATORS_MIXED_TYPES):
+            if not (exp_type in COMPARISON_OPERATORS_MIXED_TYPES):
                 self.error(ErrorType.TYPE_ERROR, f"Got {type1} and {type2} when expected same datatype")
                 return NIL_VAL
-            else:
-                # If we have a comparison operator that can take mixed types, we can just compare the types
-                # Currently it must be equals or not equals
-                return Element(InterpreterBase.BOOL_DEF, val=(op_type == NOT_EQUALS))
-        if type1 == InterpreterBase.INT_DEF and not (op_type in COMPARISON_INT_OPERATORS):
+        if type1 == InterpreterBase.INT_DEF and not (exp_type in COMPARISON_INT_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got an int when expected another datatype")
             return NIL_VAL
-        if type1 == InterpreterBase.BOOL_DEF and not (op_type in COMPARISON_BOOL_OPERATORS):
+        if type1 == InterpreterBase.BOOL_DEF and not (exp_type in COMPARISON_BOOL_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype")
             return NIL_VAL
-        if type1 == InterpreterBase.STRING_DEF and not (op_type in COMPARISON_STRING_OPERATORS):
+        if type1 == InterpreterBase.STRING_DEF and not (exp_type in COMPARISON_STRING_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got a string when expected another datatype")
             return NIL_VAL
-        if type1 == InterpreterBase.NIL_DEF and not (op_type in COMPARISON_NIL_OPERATORS):
+        if type1 == InterpreterBase.NIL_DEF and not (exp_type in COMPARISON_NIL_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got a nil when expected another datatype")
             return NIL_VAL
-        exp_type = expression.elem_type
         if exp_type == EQUALS:
-            """
-            if type1 == InterpreterBase.NIL_DEF:
-                return Element(InterpreterBase.BOOL_DEF, val=(val1.elem_type == val2.elem_type))
-            """
+            if type1 != type2:
+                return Element(InterpreterBase.BOOL_DEF, val=False)
+            """if type1 == InterpreterBase.NIL_DEF:
+                return Element(InterpreterBase.BOOL_DEF, val=(type1 == type2))"""
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE)))
         if exp_type == NOT_EQUALS:
-            """
-            if type1 == InterpreterBase.NIL_DEF:
-                return Element(InterpreterBase.BOOL_DEF, val=(val1.elem_type != val2.elem_type))
-            """
+            if type1 != type2:
+                return Element(InterpreterBase.BOOL_DEF, val=True)
+            """if type1 == InterpreterBase.NIL_DEF:
+                return Element(InterpreterBase.BOOL_DEF, val=(type1 != type2))"""
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE)))
         if exp_type == LESS_THAN:
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) < val2.get(VALUE)))
@@ -182,7 +175,7 @@ class Statement:
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) > val2.get(VALUE)))
         if exp_type == GREATER_THAN_EQUALS:
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) >= val2.get(VALUE)))
-        self.error(ErrorType.TYPE_ERROR, f"Comparison operator {op_type} not implemented for type {type1}")
+        self.error(ErrorType.TYPE_ERROR, f"Comparison operator {exp_type} not implemented for type {type1}")
         return NIL_VAL
             
 
@@ -296,10 +289,12 @@ class Statement:
             print(f"Running function {function_name} with {num_args} arguments")
         # Running the function
         statements = function.get(STATEMENTS)
+        # Adding return at the very end - it will only run if there isn't already a return
+        statements.append(Element(InterpreterBase.RETURN_DEF))
         returned_val = self.run_statements(statements)
         if returned_val.elem_type == InterpreterBase.RETURN_DEF:
             return returned_val.get(RETURNED)
-        return NIL_VAL
+        
     
     def eval_conditional(self, condition: Element) -> bool:
         if self.trace_output:
@@ -341,7 +336,7 @@ class Statement:
         if return_val:
             return_val = self.evaluate_expression(return_val)
             return Element(InterpreterBase.RETURN_DEF, returned=return_val)
-        return NIL_VAL
+        return Element(InterpreterBase.RETURN_DEF, returned=NIL_VAL)
 
     def run(self) -> Element:
         if self.trace_output:
@@ -361,8 +356,8 @@ class Statement:
         if self.type == InterpreterBase.RETURN_DEF:
             return self.run_return()
         if self.type == InterpreterBase.FCALL_DEF:
-            name = self.statement_node.get(NAME)
-            """if name in self.interpreter.preloaded_funcs:
+            """name = self.statement_node.get(NAME)
+            if name in self.interpreter.preloaded_funcs:
                 new_statement = Statement(self.interpreter, self, Element(elem_type=name, args=self.statement_node.get(ARGS)))
                 return new_statement.run()"""
             return self.run_function()

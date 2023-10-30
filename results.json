@@ -79,6 +79,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_neg_div",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_nested_expr",
             "score": 1,
             "max_score": 1,
@@ -140,6 +146,12 @@
         },
         {
             "name": "Correctness | test_return1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_return_breaking",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
