@@ -1,0 +1,15 @@
+func main() {
+    y = "H";
+    y = y + inputs("Prompt: ");
+    print(y);
+}
+
+/*
+*IN*
+ello
+*IN*
+*OUT*
+Prompt: 
+Hello
+*OUT*
+*/

@@ -1,0 +1,28 @@
+func bletch(a,b,c) {
+    print("The answer is: ", a+b*c);
+}
+
+func bar(a) {
+    print(a);
+}
+
+func foo() {
+    print("hello world!");
+}
+
+func main() {
+    foo();
+    bar(5);
+    bar("hi");
+    bar(false || true);
+    bletch(1,3,2+4);
+}
+/*
+*OUT*
+hello world!
+5
+hi
+true
+The answer is: 19
+*OUT*
+*/
