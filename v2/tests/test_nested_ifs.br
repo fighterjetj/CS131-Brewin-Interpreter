@@ -1,0 +1,16 @@
+func main() {
+  x = 15;
+  if (x > 10) {
+    if (x < 20) {
+      print("x is between 10 and 20");
+    }
+  } else {
+    print("x is not greater than 10");
+  }
+}
+
+/*
+*OUT*
+x is between 10 and 20
+*OUT*
+*/

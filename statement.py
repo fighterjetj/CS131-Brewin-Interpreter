@@ -142,8 +142,13 @@ class Statement:
         type2 = val2.elem_type
         op_type = expression.elem_type
         if type1 != type2:
-            self.error(ErrorType.TYPE_ERROR, f"Got {type1} and {type2} when expected same datatype")
-            return NIL_VAL
+            if not (op_type in COMPARISON_OPERATORS_MIXED_TYPES):
+                self.error(ErrorType.TYPE_ERROR, f"Got {type1} and {type2} when expected same datatype")
+                return NIL_VAL
+            else:
+                # If we have a comparison operator that can take mixed types, we can just compare the types
+                # Currently it must be equals or not equals
+                return Element(InterpreterBase.BOOL_DEF, val=(op_type == NOT_EQUALS))
         if type1 == InterpreterBase.INT_DEF and not (op_type in COMPARISON_INT_OPERATORS):
             self.error(ErrorType.TYPE_ERROR, f"Got an int when expected another datatype")
             return NIL_VAL

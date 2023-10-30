@@ -1,0 +1,14 @@
+func main() {
+    if (nil == "Hi") {
+        print("No");
+    }
+    if (1 != true) {
+        print("Yes");
+    }
+}
+
+/*
+*OUT*
+Yes
+*OUT*
+*/
