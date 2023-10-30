@@ -125,7 +125,7 @@ class Statement:
         if exp_type == MULTIPLY:
             return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) * val2.get(VALUE))
         if exp_type == DIVIDE:
-            return Element(InterpreterBase.INT_DEF, val=int(val1.get(VALUE) / val2.get(VALUE)))
+            return Element(InterpreterBase.INT_DEF, val=int(val1.get(VALUE) // val2.get(VALUE)))
         if exp_type == OR:
             return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) or val2.get(VALUE)))
         if exp_type == AND:

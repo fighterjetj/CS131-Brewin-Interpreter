@@ -151,6 +151,24 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_scoping1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_scoping2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_scoping3",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_shadow2",
             "score": 1,
             "max_score": 1,
