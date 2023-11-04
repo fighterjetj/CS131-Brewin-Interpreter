@@ -11,6 +11,12 @@
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_pass_by_ref",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
         }
     ]
 }

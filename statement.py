@@ -60,6 +60,8 @@ class Statement:
         if name in self.var_map:
             if self.trace_output:
                 print(f"Getting variable {name}")
+            if self.var_map[name].elem_type == InterpreterBase.REFARG_DEF:
+                return self.parent_statement.get_var(self.var_map[name].get(NAME))
             return self.var_map[name]
         scope = self.get_var_scope(name)
         if not scope:
@@ -67,17 +69,27 @@ class Statement:
             return None
         return scope.get_var(name)
 
+    def add_var(self, name: str, value: Element) -> None:
+        if name in self.var_map:
+            """self.error(
+                ErrorType.NAME_ERROR,
+                f"Variable {name} already exists in this scope, cannot add it",
+            )"""
+        if self.trace_output:
+            print(f"Making new variable {name} set to {str(value)}")
+        self.var_map[name] = value
+
     def set_var(self, name: str, value: Element) -> None:
         if name in self.var_map:
             if self.trace_output:
                 print(f"Setting variable {name} to {str(value)}")
+            if self.var_map[name].elem_type == InterpreterBase.REFARG_DEF:
+                self.parent_statement.set_var(self.var_map[name].get(NAME), value)
             self.var_map[name] = value
             return
         scope = self.get_var_scope(name)
         if not scope:
-            if self.trace_output:
-                print(f"Setting variable {name} to {str(value)}")
-            self.var_map[name] = value
+            self.add_var(name, value)
         else:
             scope.set_var(name, value)
 
@@ -206,17 +218,6 @@ class Statement:
                 self.error(
                     ErrorType.TYPE_ERROR,
                     f"Got {type1} and {type2} when expected same datatype",
-                )
-                return NIL_VAL
-            # Mixed types have to be int and/or bool
-            if (
-                type1 != InterpreterBase.INT_DEF and type1 != InterpreterBase.BOOL_DEF
-            ) or (
-                type2 != InterpreterBase.BOOL_DEF and type2 != InterpreterBase.INT_DEF
-            ):
-                self.error(
-                    ErrorType.TYPE_ERROR,
-                    f"Got {type1} and {type2} when both must be an int or a bool",
                 )
                 return NIL_VAL
         if type1 == InterpreterBase.INT_DEF and not (
@@ -415,7 +416,6 @@ class Statement:
         if self.trace_output:
             print(f"Running function {str(self.statement_node)}")
         args = self.statement_node.get(ARGS)
-        args = [self.evaluate_expression(arg) for arg in args]
         num_args = len(args)
         # Getting the function from the interpreter
         function_name = self.statement_node.get(NAME)
@@ -427,7 +427,20 @@ class Statement:
         # arg names
         arg_names = function.get(ARGS)
         for i in range(len(args)):
-            self.var_map[arg_names[i].get(NAME)] = self.evaluate_expression(args[i])
+            if arg_names[i].elem_type == InterpreterBase.ARG_DEF:
+                self.add_var(arg_names[i].get(NAME), self.evaluate_expression(args[i]))
+            elif arg_names[i].elem_type == InterpreterBase.REFARG_DEF:
+                # Only matters if we are being passed a variable, otherwise the reference is to nowhere
+                if args[i].elem_type == InterpreterBase.VAR_DEF:
+                    ref_elem = Element(
+                        InterpreterBase.REFARG_DEF, name=args[i].get(NAME)
+                    )
+                    self.add_var(arg_names[i].get(NAME), ref_elem)
+                else:
+                    self.add_var(
+                        arg_names[i].get(NAME), self.evaluate_expression(args[i])
+                    )
+
         if self.trace_output:
             print(f"Running function {function_name} with {num_args} arguments")
         # Running the function
