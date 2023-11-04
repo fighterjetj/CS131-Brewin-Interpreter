@@ -37,6 +37,7 @@ class Statement:
         return deepcopy(val)
 
     def dump_info(self):
+        print("\nDumping statement info")
         print(f"Statement type: {self.type}")
         print(f"Statement node: {str(self.statement_node)}")
         print(f"Var map: {self.var_map}")
@@ -65,7 +66,15 @@ class Statement:
             return self.var_map[name]
         scope = self.get_var_scope(name)
         if not scope:
-            self.error(ErrorType.NAME_ERROR, f"No such variable as {name}")
+            if self.interpreter.number_funcs(name) == 1:
+                return Element(InterpreterBase.FUNC_DEF, name=name)
+            elif self.interpreter.number_funcs(name) > 1:
+                self.error(
+                    ErrorType.NAME_ERROR,
+                    f"Function {name} is overloaded, cannot be gotten as a variable",
+                )
+            else:
+                self.error(ErrorType.NAME_ERROR, f"No such variable as {name}")
             return None
         return scope.get_var(name)
 
@@ -92,6 +101,25 @@ class Statement:
             self.add_var(name, value)
         else:
             scope.set_var(name, value)
+
+    def get_func(self, name: str, num_args: int) -> Element:
+        if self.trace_output:
+            print(f"Getting function {name} with {num_args} arguments")
+        var_func_scope = self.get_var_scope(name)
+        if var_func_scope:
+            var_func = var_func_scope.get_var(name)
+            if var_func.elem_type == InterpreterBase.FUNC_DEF:
+                base_func_name = var_func.get(NAME)
+                return self.interpreter.get_func(base_func_name, num_args)
+            else:
+                self.error(
+                    ErrorType.NAME_ERROR,
+                    f"Variable {name} exists but is not a function",
+                )
+                return NIL_VAL
+        if self.interpreter.is_preloaded(name):
+            return Element(InterpreterBase.FUNC_DEF, name=name)
+        return self.interpreter.get_func(name, num_args)
 
     def evaluate_unary_operation(self, expression: Element) -> Element:
         if self.trace_output:
@@ -270,6 +298,10 @@ class Statement:
                 return Element(InterpreterBase.BOOL_DEF, val=False)
             if type1 == InterpreterBase.NIL_DEF:
                 return Element(InterpreterBase.BOOL_DEF, val=(type1 == type2))
+            if type1 == InterpreterBase.FUNC_DEF:
+                return Element(
+                    InterpreterBase.BOOL_DEF, val=(val1.get(NAME) == val2.get(NAME))
+                )
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE))
             )
@@ -295,6 +327,10 @@ class Statement:
                 return Element(InterpreterBase.BOOL_DEF, val=True)
             if type1 == InterpreterBase.NIL_DEF:
                 return Element(InterpreterBase.BOOL_DEF, val=(type1 != type2))
+            if type1 == InterpreterBase.FUNC_DEF:
+                return Element(
+                    InterpreterBase.BOOL_DEF, val=(val1.get(NAME) != val2.get(NAME))
+                )
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE))
             )
@@ -353,7 +389,7 @@ class Statement:
         if self.trace_output:
             print(f"Running assignment {name} = {str(value)}")
         # The current scope is just the assignment statement, thus we need to assign it in the scope of the parent statement
-        self.parent_statement.set_var(name, self.evaluate_expression(value))
+        self.parent_statement.set_var(name, value)
         return NIL_VAL
 
     # Preloaded functions
@@ -419,11 +455,12 @@ class Statement:
         num_args = len(args)
         # Getting the function from the interpreter
         function_name = self.statement_node.get(NAME)
-        if function_name in PRELOADED_FUNCS:
+        function = self.get_func(function_name, num_args)
+        true_name = self.interpreter.get_func_name(function)
+        if self.interpreter.is_preloaded(true_name):
             new_node = Element(function_name, args=args)
             new_statement = Statement(self.interpreter, self, new_node)
             return new_statement.run()
-        function = self.interpreter.get_func(function_name, num_args)
         # arg names
         arg_names = function.get(ARGS)
         for i in range(len(args)):

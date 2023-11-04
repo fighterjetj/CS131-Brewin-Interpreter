@@ -7,6 +7,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_return_func",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_type_coercion",
             "score": 1,
             "max_score": 1,
@@ -14,6 +20,30 @@
         },
         {
             "name": "Correctness | test_pass_by_ref",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_compare_funcs",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_store_func_in_var",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_store_overloaded_func",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_capture_scope",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"

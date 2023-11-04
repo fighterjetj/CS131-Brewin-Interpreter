@@ -1,0 +1,14 @@
+func foo() {
+    print("hi");
+}
+
+func main() {
+    x = foo;
+    x();
+}
+
+/*
+*OUT*
+hi
+*OUT*
+*/

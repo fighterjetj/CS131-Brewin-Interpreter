@@ -119,15 +119,22 @@ class Interpreter(InterpreterBase):
                 print(f"Preloaded function {str(func)}")
 
     def get_func(self, name, num_args):
-        if not name in self.function_map:
-            self.error(ErrorType.NAME_ERROR, f"No such function as {name}")
-            return None
-        if not num_args in self.function_map[name]:
+        if self.func_exists(name):
+            if num_args in self.function_map[name]:
+                return self.function_map[name][num_args]
             self.error(
                 ErrorType.NAME_ERROR,
                 f"No such function as {name} with {num_args} arguments",
             )
-        return self.function_map[name][num_args]
+        self.error(ErrorType.NAME_ERROR, f"No such function as {name}")
+
+    def number_funcs(self, name):
+        if self.func_exists(name):
+            return len(self.function_map[name])
+        return 0
+
+    def func_exists(self, name):
+        return name in self.function_map
 
     def is_preloaded(self, function_name):
         return function_name in self.preloaded_funcs

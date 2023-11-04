@@ -1,0 +1,25 @@
+func foo() {
+    print(1);
+}
+func bar() {
+    print(2);
+}
+func main() {
+    x = foo;
+    if (x == foo) {
+        print("Same 1");
+    }
+    if (foo != bar) {
+        print("Different 2");
+    }
+    if (x == bar) {
+        print("Different 2 again?");
+    }
+}
+
+/*
+*OUT*
+Same 1
+Different 2
+*OUT*
+*/
