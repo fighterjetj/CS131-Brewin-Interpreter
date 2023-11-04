@@ -2,6 +2,9 @@ from intbase import ErrorType
 from element import Element
 from intbase import InterpreterBase
 from constants import *
+from copy import deepcopy
+
+
 class Statement:
     def __init__(self, interpreter, parent_statement, statement_node: Element):
         self.parent_statement = parent_statement
@@ -10,23 +13,28 @@ class Statement:
         self.interpreter = interpreter
         self.statement_node = statement_node
         if not statement_node.elem_type in STATEMENT_TYPES:
-            interpreter.error(ErrorType.TYPE_ERROR, f"Statement type {statement_node.elem_type} not recognized")
+            interpreter.error(
+                ErrorType.TYPE_ERROR,
+                f"Statement type {statement_node.elem_type} not recognized",
+            )
         if parent_statement:
             if self.trace_output:
                 print("Creating new statement under parent statement")
         else:
             if self.trace_output:
                 print("Creating new root statement")
-        
+
         # Because we can't declare functions within the statement of other functions, this is fine
         self.var_map = {}
-    
+
     def error(self, error_type: ErrorType, message: str) -> None:
         if self.trace_output:
             self.dump_info()
         # self.dump_info()
         self.interpreter.error(error_type, message)
 
+    def deep_copy_value(self, val: Element) -> Element:
+        return deepcopy(val)
 
     def dump_info(self):
         print(f"Statement type: {self.type}")
@@ -35,6 +43,7 @@ class Statement:
         if self.parent_statement:
             print("\nPrinting my parent statement")
             self.parent_statement.dump_info()
+
     # We recursively check if the variable exists in the current statement or any parent statements
     # We stop when we reach the invoking function
     def get_var_scope(self, name: str):
@@ -71,7 +80,7 @@ class Statement:
             self.var_map[name] = value
         else:
             scope.set_var(name, value)
-    
+
     def evaluate_unary_operation(self, expression: Element) -> Element:
         if self.trace_output:
             print(f"Evaluating unary operation {str(expression)}")
@@ -79,19 +88,30 @@ class Statement:
         type = val.elem_type
         exp_type = expression.elem_type
         if type == InterpreterBase.INT_DEF and not (exp_type in UNARY_INT_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got an int when expected another datatype")
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got an int when expected another datatype"
+            )
             return NIL_VAL
         if type == InterpreterBase.BOOL_DEF and not (exp_type in UNARY_BOOL_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype")
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype"
+            )
             return NIL_VAL
-        if type == InterpreterBase.STRING_DEF and not (exp_type in UNARY_STRING_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got a string when expected another datatype")
+        if type == InterpreterBase.STRING_DEF and not (
+            exp_type in UNARY_STRING_OPERATORS
+        ):
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got a string when expected another datatype"
+            )
             return NIL_VAL
         if exp_type == InterpreterBase.NEG_DEF:
             return Element(InterpreterBase.INT_DEF, val=-val.get(VALUE))
         if exp_type == InterpreterBase.NOT_DEF:
             return Element(InterpreterBase.BOOL_DEF, val=not val.get(VALUE))
-        self.error(ErrorType.TYPE_ERROR, f"Unary operator {expression.elem_type} not implemented")
+        self.error(
+            ErrorType.TYPE_ERROR,
+            f"Unary operator {expression.elem_type} not implemented",
+        )
         return NIL_VAL
 
     def evaluate_binary_operation(self, expression: Element) -> Element:
@@ -103,34 +123,64 @@ class Statement:
         type2 = val2.elem_type
         exp_type = expression.elem_type
         if type1 != type2:
-            self.error(ErrorType.TYPE_ERROR, f"Got {type1} and {type2} when expected same datatype")
+            self.error(
+                ErrorType.TYPE_ERROR,
+                f"Got {type1} and {type2} when expected same datatype",
+            )
             return NIL_VAL
         if type1 == InterpreterBase.INT_DEF and not (exp_type in BINARY_INT_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got an int when expected another datatype")
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got an int when expected another datatype"
+            )
             return NIL_VAL
-        if type1 == InterpreterBase.BOOL_DEF and not (exp_type in BINARY_BOOL_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype")
+        if type1 == InterpreterBase.BOOL_DEF and not (
+            exp_type in BINARY_BOOL_OPERATORS
+        ):
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype"
+            )
             return NIL_VAL
-        if type1 == InterpreterBase.STRING_DEF and not (exp_type in BINARY_STRING_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got a string when expected another datatype")
+        if type1 == InterpreterBase.STRING_DEF and not (
+            exp_type in BINARY_STRING_OPERATORS
+        ):
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got a string when expected another datatype"
+            )
             return NIL_VAL
         if exp_type == ADD:
             if type1 == InterpreterBase.STRING_DEF:
-                return Element(InterpreterBase.STRING_DEF, val=val1.get(VALUE) + val2.get(VALUE))
-            return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) + val2.get(VALUE))
+                return Element(
+                    InterpreterBase.STRING_DEF, val=val1.get(VALUE) + val2.get(VALUE)
+                )
+            return Element(
+                InterpreterBase.INT_DEF, val=val1.get(VALUE) + val2.get(VALUE)
+            )
         if exp_type == SUBTRACT:
-            return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) - val2.get(VALUE))
+            return Element(
+                InterpreterBase.INT_DEF, val=val1.get(VALUE) - val2.get(VALUE)
+            )
         if exp_type == MULTIPLY:
-            return Element(InterpreterBase.INT_DEF, val=val1.get(VALUE) * val2.get(VALUE))
+            return Element(
+                InterpreterBase.INT_DEF, val=val1.get(VALUE) * val2.get(VALUE)
+            )
         if exp_type == DIVIDE:
-            return Element(InterpreterBase.INT_DEF, val=int(val1.get(VALUE) // val2.get(VALUE)))
+            return Element(
+                InterpreterBase.INT_DEF, val=int(val1.get(VALUE) // val2.get(VALUE))
+            )
         if exp_type == OR:
-            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) or val2.get(VALUE)))
+            return Element(
+                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) or val2.get(VALUE))
+            )
         if exp_type == AND:
-            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) and val2.get(VALUE)))
-        self.error(ErrorType.TYPE_ERROR, f"Binary operator {expression.elem_type} not implemented")
+            return Element(
+                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) and val2.get(VALUE))
+            )
+        self.error(
+            ErrorType.TYPE_ERROR,
+            f"Binary operator {expression.elem_type} not implemented",
+        )
         return NIL_VAL
-    
+
     def evaluate_comparison_operation(self, expression: Element) -> Element:
         if self.trace_output:
             print(f"Evaluating comparison operation {str(expression)}")
@@ -141,43 +191,76 @@ class Statement:
         exp_type = expression.elem_type
         if type1 != type2:
             if not (exp_type in COMPARISON_OPERATORS_MIXED_TYPES):
-                self.error(ErrorType.TYPE_ERROR, f"Got {type1} and {type2} when expected same datatype")
+                self.error(
+                    ErrorType.TYPE_ERROR,
+                    f"Got {type1} and {type2} when expected same datatype",
+                )
                 return NIL_VAL
-        if type1 == InterpreterBase.INT_DEF and not (exp_type in COMPARISON_INT_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got an int when expected another datatype")
+        if type1 == InterpreterBase.INT_DEF and not (
+            exp_type in COMPARISON_INT_OPERATORS
+        ):
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got an int when expected another datatype"
+            )
             return NIL_VAL
-        if type1 == InterpreterBase.BOOL_DEF and not (exp_type in COMPARISON_BOOL_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype")
+        if type1 == InterpreterBase.BOOL_DEF and not (
+            exp_type in COMPARISON_BOOL_OPERATORS
+        ):
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got a bool when expected another datatype"
+            )
             return NIL_VAL
-        if type1 == InterpreterBase.STRING_DEF and not (exp_type in COMPARISON_STRING_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got a string when expected another datatype")
+        if type1 == InterpreterBase.STRING_DEF and not (
+            exp_type in COMPARISON_STRING_OPERATORS
+        ):
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got a string when expected another datatype"
+            )
             return NIL_VAL
-        if type1 == InterpreterBase.NIL_DEF and not (exp_type in COMPARISON_NIL_OPERATORS):
-            self.error(ErrorType.TYPE_ERROR, f"Got a nil when expected another datatype")
+        if type1 == InterpreterBase.NIL_DEF and not (
+            exp_type in COMPARISON_NIL_OPERATORS
+        ):
+            self.error(
+                ErrorType.TYPE_ERROR, f"Got a nil when expected another datatype"
+            )
             return NIL_VAL
         if exp_type == EQUALS:
             if type1 != type2:
                 return Element(InterpreterBase.BOOL_DEF, val=False)
             """if type1 == InterpreterBase.NIL_DEF:
                 return Element(InterpreterBase.BOOL_DEF, val=(type1 == type2))"""
-            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE)))
+            return Element(
+                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE))
+            )
         if exp_type == NOT_EQUALS:
             if type1 != type2:
                 return Element(InterpreterBase.BOOL_DEF, val=True)
             """if type1 == InterpreterBase.NIL_DEF:
                 return Element(InterpreterBase.BOOL_DEF, val=(type1 != type2))"""
-            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE)))
+            return Element(
+                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE))
+            )
         if exp_type == LESS_THAN:
-            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) < val2.get(VALUE)))
+            return Element(
+                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) < val2.get(VALUE))
+            )
         if exp_type == LESS_THAN_EQUALS:
-            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) <= val2.get(VALUE)))
+            return Element(
+                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) <= val2.get(VALUE))
+            )
         if exp_type == GREATER_THAN:
-            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) > val2.get(VALUE)))
+            return Element(
+                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) > val2.get(VALUE))
+            )
         if exp_type == GREATER_THAN_EQUALS:
-            return Element(InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) >= val2.get(VALUE)))
-        self.error(ErrorType.TYPE_ERROR, f"Comparison operator {exp_type} not implemented for type {type1}")
+            return Element(
+                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) >= val2.get(VALUE))
+            )
+        self.error(
+            ErrorType.TYPE_ERROR,
+            f"Comparison operator {exp_type} not implemented for type {type1}",
+        )
         return NIL_VAL
-            
 
     # Technically evaluates expressions, variables, and values, but variables and values are very little work so I fold them in
     def evaluate_expression(self, expression: Element) -> Element:
@@ -200,11 +283,11 @@ class Statement:
                 return self.evaluate_binary_operation(expression)
             if expression_type in COMPARISON_OPERATORS:
                 return self.evaluate_comparison_operation(expression)
-        self.error(ErrorType.TYPE_ERROR, f"Expression type {expression_type} not recognized")
+        self.error(
+            ErrorType.TYPE_ERROR, f"Expression type {expression_type} not recognized"
+        )
         return NIL_VAL
-            
 
-    
     def run_assignment(self) -> Element:
         name = self.statement_node.get(NAME)
         value = self.statement_node.get(EXPRESSION)
@@ -230,13 +313,16 @@ class Statement:
                 output_str += str(arg_val)
         self.interpreter.output(output_str)
         return NIL_VAL
-    
+
     def get_input(self) -> str:
         if self.trace_output:
             print(f"Getting input from {str(self.statement_node)}")
         args = self.statement_node.get(ARGS)
         if len(args) > 1:
-            self.error(ErrorType.TYPE_ERROR, f"Input functions take at most 1 arguments, but got {len(args)}")
+            self.error(
+                ErrorType.TYPE_ERROR,
+                f"Input functions take at most 1 arguments, but got {len(args)}",
+            )
             return
         if len(args) == 1:
             self.run_print()
@@ -251,13 +337,13 @@ class Statement:
             self.error(ErrorType.TYPE_ERROR, f"inputi expected int, got {input_val}")
             return NIL_VAL
         return Element(InterpreterBase.INT_DEF, val=int(input_val))
-    
+
     def run_inputs(self) -> Element:
         if self.trace_output:
             print(f"Running inputs {str(self.statement_node)}")
         input_val = self.get_input()
         return Element(InterpreterBase.STRING_DEF, val=input_val)
-    
+
     def run_statements(self, statements) -> Element:
         if self.trace_output:
             print(f"Running statements")
@@ -294,14 +380,16 @@ class Statement:
         returned_val = self.run_statements(statements)
         if returned_val.elem_type == InterpreterBase.RETURN_DEF:
             return returned_val.get(RETURNED)
-        
-    
+
     def eval_conditional(self, condition: Element) -> bool:
         if self.trace_output:
             print(f"Evaluating conditional {str(condition)}")
         condition = self.evaluate_expression(condition)
         if condition.elem_type != InterpreterBase.BOOL_DEF:
-            self.error(ErrorType.TYPE_ERROR, f"Expected bool for condition, got {condition.elem_type}")
+            self.error(
+                ErrorType.TYPE_ERROR,
+                f"Expected bool for condition, got {condition.elem_type}",
+            )
             return False
         return condition.get(VALUE)
 
@@ -316,7 +404,7 @@ class Statement:
         if statements:
             return self.run_statements(statements)
         return NIL_VAL
-    
+
     def run_while(self) -> Element:
         if self.trace_output:
             print(f"Running while {str(self.statement_node)}")
@@ -328,15 +416,19 @@ class Statement:
             if returned_val.elem_type == InterpreterBase.RETURN_DEF:
                 return returned_val
         return NIL_VAL
-    
+
     def run_return(self) -> Element:
         if self.trace_output:
             print(f"Running return {str(self.statement_node)}")
         return_val = self.statement_node.get(EXPRESSION)
         if return_val:
             return_val = self.evaluate_expression(return_val)
-            return Element(InterpreterBase.RETURN_DEF, returned=return_val)
-        return Element(InterpreterBase.RETURN_DEF, returned=NIL_VAL)
+            return Element(
+                InterpreterBase.RETURN_DEF, returned=self.deep_copy_value(return_val)
+            )
+        return Element(
+            InterpreterBase.RETURN_DEF, returned=self.deep_copy_value(NIL_VAL)
+        )
 
     def run(self) -> Element:
         if self.trace_output:
