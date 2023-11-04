@@ -5,6 +5,12 @@
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_type_coercion",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
         }
     ]
 }

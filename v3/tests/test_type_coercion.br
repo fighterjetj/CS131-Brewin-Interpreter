@@ -1,0 +1,48 @@
+func main() {
+    if (true == -5) {
+        print(1);
+    }
+    if (false != 0) {
+        print(2);
+    }
+    if (0) {
+        print(3);
+    }
+    if (-1) {
+        print(4);
+    }
+    x = -5;
+    while (x) {
+        print(x);
+        x = x + 1;
+    }
+    if (1 && true) {
+        print(5);
+    }
+    if (0 || false) {
+        print(6);
+    }
+    if (!0) {
+        print(7);
+    }
+    print(true + 7);
+    print(false * 10);
+    print(true + true);
+}
+
+/*
+*OUT*
+1
+4
+-5
+-4
+-3
+-2
+-1
+5
+7
+8
+0
+2
+*OUT*
+*/

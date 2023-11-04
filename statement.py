@@ -123,11 +123,23 @@ class Statement:
         type2 = val2.elem_type
         exp_type = expression.elem_type
         if type1 != type2:
-            self.error(
-                ErrorType.TYPE_ERROR,
-                f"Got {type1} and {type2} when expected same datatype",
-            )
-            return NIL_VAL
+            if not (exp_type in MIXED_TYPE_BINARY_OPERATORS):
+                self.error(
+                    ErrorType.TYPE_ERROR,
+                    f"Got {type1} and {type2} when expected same datatype",
+                )
+                return NIL_VAL
+            # Mixed types have to be int and/or bool
+            if (
+                type1 != InterpreterBase.INT_DEF and type1 != InterpreterBase.BOOL_DEF
+            ) or (
+                type2 != InterpreterBase.BOOL_DEF and type2 != InterpreterBase.INT_DEF
+            ):
+                self.error(
+                    ErrorType.TYPE_ERROR,
+                    f"Got {type1} and {type2} when both must be an int or a bool",
+                )
+                return NIL_VAL
         if type1 == InterpreterBase.INT_DEF and not (exp_type in BINARY_INT_OPERATORS):
             self.error(
                 ErrorType.TYPE_ERROR, f"Got an int when expected another datatype"
@@ -148,7 +160,7 @@ class Statement:
             )
             return NIL_VAL
         if exp_type == ADD:
-            if type1 == InterpreterBase.STRING_DEF:
+            if type1 == InterpreterBase.STRING_DEF and type1 == type2:
                 return Element(
                     InterpreterBase.STRING_DEF, val=val1.get(VALUE) + val2.get(VALUE)
                 )
@@ -169,15 +181,15 @@ class Statement:
             )
         if exp_type == OR:
             return Element(
-                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) or val2.get(VALUE))
+                InterpreterBase.BOOL_DEF, val=bool(val1.get(VALUE) or val2.get(VALUE))
             )
         if exp_type == AND:
             return Element(
-                InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) and val2.get(VALUE))
+                InterpreterBase.BOOL_DEF, val=bool(val1.get(VALUE) and val2.get(VALUE))
             )
         self.error(
             ErrorType.TYPE_ERROR,
-            f"Binary operator {expression.elem_type} not implemented",
+            f"Binary operator {expression.elem_type} not implemented for types {type1} and {type2}",
         )
         return NIL_VAL
 
@@ -190,10 +202,21 @@ class Statement:
         type2 = val2.elem_type
         exp_type = expression.elem_type
         if type1 != type2:
-            if not (exp_type in COMPARISON_OPERATORS_MIXED_TYPES):
+            if not (exp_type in MIXED_TYPE_COMPARISON_OPERATORS):
                 self.error(
                     ErrorType.TYPE_ERROR,
                     f"Got {type1} and {type2} when expected same datatype",
+                )
+                return NIL_VAL
+            # Mixed types have to be int and/or bool
+            if (
+                type1 != InterpreterBase.INT_DEF and type1 != InterpreterBase.BOOL_DEF
+            ) or (
+                type2 != InterpreterBase.BOOL_DEF and type2 != InterpreterBase.INT_DEF
+            ):
+                self.error(
+                    ErrorType.TYPE_ERROR,
+                    f"Got {type1} and {type2} when both must be an int or a bool",
                 )
                 return NIL_VAL
         if type1 == InterpreterBase.INT_DEF and not (
@@ -226,17 +249,51 @@ class Statement:
             return NIL_VAL
         if exp_type == EQUALS:
             if type1 != type2:
+                # Handling casting ints to bools
+                if (
+                    type1 == InterpreterBase.BOOL_DEF
+                    and type2 == InterpreterBase.INT_DEF
+                ):
+                    return Element(
+                        InterpreterBase.BOOL_DEF,
+                        val=(val1.get(VALUE) == bool(val2.get(VALUE))),
+                    )
+                if (
+                    type1 == InterpreterBase.INT_DEF
+                    and type2 == InterpreterBase.BOOL_DEF
+                ):
+                    return Element(
+                        InterpreterBase.BOOL_DEF,
+                        val=(bool(val1.get(VALUE)) == val2.get(VALUE)),
+                    )
                 return Element(InterpreterBase.BOOL_DEF, val=False)
-            """if type1 == InterpreterBase.NIL_DEF:
-                return Element(InterpreterBase.BOOL_DEF, val=(type1 == type2))"""
+            if type1 == InterpreterBase.NIL_DEF:
+                return Element(InterpreterBase.BOOL_DEF, val=(type1 == type2))
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE))
             )
         if exp_type == NOT_EQUALS:
             if type1 != type2:
+                # Handling casting ints to bools
+                if (
+                    type1 == InterpreterBase.BOOL_DEF
+                    and type2 == InterpreterBase.INT_DEF
+                ):
+                    return Element(
+                        InterpreterBase.BOOL_DEF,
+                        val=(val1.get(VALUE) != bool(val2.get(VALUE))),
+                    )
+                if (
+                    type1 == InterpreterBase.INT_DEF
+                    and type2 == InterpreterBase.BOOL_DEF
+                ):
+                    return Element(
+                        InterpreterBase.BOOL_DEF,
+                        val=(bool(val1.get(VALUE)) != val2.get(VALUE)),
+                    )
                 return Element(InterpreterBase.BOOL_DEF, val=True)
-            """if type1 == InterpreterBase.NIL_DEF:
-                return Element(InterpreterBase.BOOL_DEF, val=(type1 != type2))"""
+            if type1 == InterpreterBase.NIL_DEF:
+                return Element(InterpreterBase.BOOL_DEF, val=(type1 != type2))
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE))
             )
@@ -258,7 +315,7 @@ class Statement:
             )
         self.error(
             ErrorType.TYPE_ERROR,
-            f"Comparison operator {exp_type} not implemented for type {type1}",
+            f"Comparison operator {exp_type} not implemented for types {type1} and {type2}",
         )
         return NIL_VAL
 
@@ -385,13 +442,16 @@ class Statement:
         if self.trace_output:
             print(f"Evaluating conditional {str(condition)}")
         condition = self.evaluate_expression(condition)
-        if condition.elem_type != InterpreterBase.BOOL_DEF:
+        if (
+            condition.elem_type != InterpreterBase.BOOL_DEF
+            and condition.elem_type != InterpreterBase.INT_DEF
+        ):
             self.error(
                 ErrorType.TYPE_ERROR,
                 f"Expected bool for condition, got {condition.elem_type}",
             )
             return False
-        return condition.get(VALUE)
+        return bool(condition.get(VALUE))
 
     def run_if(self) -> Element:
         if self.trace_output:
