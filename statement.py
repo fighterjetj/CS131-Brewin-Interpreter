@@ -34,6 +34,12 @@ class Statement:
         self.interpreter.error(error_type, message)
 
     def deep_copy_value(self, val: Element) -> Element:
+        if val.elem_type == InterpreterBase.FUNC_DEF:
+            return Element(
+                InterpreterBase.FUNC_DEF,
+                name=val.get(NAME),
+                func_ind=self.interpreter.get_func_ind(),
+            )
         return deepcopy(val)
 
     def dump_info(self):
@@ -66,8 +72,13 @@ class Statement:
             return self.var_map[name]
         scope = self.get_var_scope(name)
         if not scope:
+            # We make a unique reference to the function
             if self.interpreter.number_funcs(name) == 1:
-                return Element(InterpreterBase.FUNC_DEF, name=name)
+                return Element(
+                    InterpreterBase.FUNC_DEF,
+                    name=name,
+                    func_ind=0,
+                )
             elif self.interpreter.number_funcs(name) > 1:
                 self.error(
                     ErrorType.NAME_ERROR,
@@ -300,7 +311,9 @@ class Statement:
                 return Element(InterpreterBase.BOOL_DEF, val=(type1 == type2))
             if type1 == InterpreterBase.FUNC_DEF:
                 return Element(
-                    InterpreterBase.BOOL_DEF, val=(val1.get(NAME) == val2.get(NAME))
+                    InterpreterBase.BOOL_DEF,
+                    val=(val1.get(FUNC_IND) == val2.get(FUNC_IND))
+                    and (val1.get(NAME) == val2.get(NAME)),
                 )
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE))
@@ -329,7 +342,9 @@ class Statement:
                 return Element(InterpreterBase.BOOL_DEF, val=(type1 != type2))
             if type1 == InterpreterBase.FUNC_DEF:
                 return Element(
-                    InterpreterBase.BOOL_DEF, val=(val1.get(NAME) != val2.get(NAME))
+                    InterpreterBase.BOOL_DEF,
+                    val=(val1.get(FUNC_IND) != val2.get(FUNC_IND))
+                    or (val1.get(NAME) != val2.get(NAME)),
                 )
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE))

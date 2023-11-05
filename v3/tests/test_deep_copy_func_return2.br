@@ -1,0 +1,28 @@
+func foo() {
+  a = a + 1;
+}
+
+func bar() {
+  return foo;
+}
+
+func main() {
+  a = 0;
+  x = foo;
+  y = foo;
+  z = bar();
+  print(x==y);
+  print(x==bar());
+  print(a);
+  z();
+  print(a);
+}
+
+/*
+*OUT*
+true
+false
+0
+1
+*OUT*
+*/

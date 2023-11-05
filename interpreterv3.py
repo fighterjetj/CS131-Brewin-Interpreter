@@ -11,6 +11,11 @@ class Interpreter(InterpreterBase):
         self.function_map = {}
         self.preloaded_funcs = set()
         self.trace_output = trace_output
+        self.func_ind = 0
+
+    def get_func_ind(self):
+        self.func_ind += 1
+        return self.func_ind
 
     def error(self, error_type: ErrorType, message: str) -> None:
         super().error(error_type, message)
