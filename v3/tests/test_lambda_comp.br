@@ -1,0 +1,23 @@
+func foo() {
+  return x;
+}
+
+func main() {
+  x = lambda() { print("Hi"); };
+  y = foo();
+  z = lambda() { print("Hi"); };
+  a = x;
+  print(y==x);
+  print(z==x);
+  print(y==z);
+  print(x==a);
+}
+
+/*
+*OUT*
+false
+false
+false
+true
+*OUT*
+*/
