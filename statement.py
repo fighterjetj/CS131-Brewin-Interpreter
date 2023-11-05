@@ -78,6 +78,10 @@ class Statement:
     # We stop when we reach the invoking function
     def get_var_scope(self, name: str):
         if name in self.var_map:
+            if self.trace_output:
+                print(f"Found variable {name} in this scope")
+            if self.var_map[name].elem_type == InterpreterBase.REFARG_DEF:
+                return self.parent_statement.get_var_scope(self.var_map[name].get(NAME))
             return self
         # Recursively get the scope
         if not self.parent_statement:
@@ -86,14 +90,25 @@ class Statement:
             return None
         return self.parent_statement.get_var_scope(name)
 
-    def get_var(self, name: str) -> Element:
+    def follow_ref_to_name(self, name: str):
         if name in self.var_map:
             if self.trace_output:
-                print(f"Getting variable {name}")
+                print(f"Found variable {name} in this scope")
             if self.var_map[name].elem_type == InterpreterBase.REFARG_DEF:
-                return self.parent_statement.get_var(self.var_map[name].get(NAME))
-            return self.var_map[name]
+                return self.parent_statement.follow_ref_to_name(
+                    self.var_map[name].get(NAME)
+                )
+            return name
+        # Recursively get the scope
+        if not self.parent_statement:
+            if self.trace_output:
+                print("Reached the root statement!")
+            return None
+        return self.parent_statement.follow_ref_to_name(name)
+
+    def get_var(self, name: str) -> Element:
         scope = self.get_var_scope(name)
+        true_name = self.follow_ref_to_name(name)
         if not scope:
             # We make a unique reference to the function
             if self.interpreter.number_funcs(name) == 1:
@@ -110,7 +125,7 @@ class Statement:
             else:
                 self.error(ErrorType.NAME_ERROR, f"No such variable as {name}")
             return None
-        return scope.get_var(name)
+        return scope.var_map[true_name]
 
     def add_var(self, name: str, value: Element) -> None:
         if name in self.var_map:
@@ -123,18 +138,12 @@ class Statement:
         self.var_map[name] = value
 
     def set_var(self, name: str, value: Element) -> None:
-        if name in self.var_map:
-            if self.trace_output:
-                print(f"Setting variable {name} to {str(value)}")
-            if self.var_map[name].elem_type == InterpreterBase.REFARG_DEF:
-                self.parent_statement.set_var(self.var_map[name].get(NAME), value)
-            self.var_map[name] = value
-            return
         scope = self.get_var_scope(name)
+        true_name = self.follow_ref_to_name(name)
         if not scope:
             self.add_var(name, value)
         else:
-            scope.set_var(name, value)
+            scope.var_map[true_name] = value
 
     def get_func(self, name: str, num_args: int) -> Element:
         if self.trace_output:

@@ -1,4 +1,5 @@
 func foo(ref x) {
+    x = 12;
     bar(x);
 }
 
@@ -8,12 +9,12 @@ func bar(ref x) {
 
 func main(){
     x = 10;
-    bar(x);
+    foo(x);
     print(x);
 }
 
 /*
 *OUT*
-11
+13
 *OUT*
 */
