@@ -11,6 +11,11 @@ class Interpreter(InterpreterBase):
         self.function_map = {}
         self.preloaded_funcs = set()
         self.trace_output = trace_output
+        self.lambda_num = 0
+
+    def get_lambda_ind(self):
+        self.lambda_num += 1
+        return self.lambda_num
 
     def error(self, error_type: ErrorType, message: str) -> None:
         super().error(error_type, message)
@@ -117,6 +122,12 @@ class Interpreter(InterpreterBase):
             self.preload_func(func)
             if self.trace_output:
                 print(f"Preloaded function {str(func)}")
+
+    def get_only_func(self, name):
+        if self.number_funcs(name) == 1:
+            num_args = list(self.function_map[name].keys())[0]
+            return self.function_map[name][num_args]
+        self.error(ErrorType.NAME_ERROR, f"No such function as {name}")
 
     def get_func(self, name, num_args):
         if self.func_exists(name):

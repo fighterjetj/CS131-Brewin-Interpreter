@@ -13,13 +13,31 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_pass_by_ref1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_type_coercion",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_pass_by_ref",
+            "name": "Correctness | test_lambda",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_lambda_comp",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_deep_copy_func_return",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -37,7 +55,49 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_return_lambda",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_pass_by_ref3",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_multiple_lambdas",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_pass_by_ref2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_lambda_mismatched_args",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_compare_funcs_wrong",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Incorrectness | test_store_overloaded_func",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_dynamic_scoping1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
