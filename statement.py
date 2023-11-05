@@ -34,22 +34,6 @@ class Statement:
         self.interpreter.error(error_type, message)
 
     def deep_copy_value(self, val: Element) -> Element:
-        if val.elem_type == InterpreterBase.FUNC_DEF:
-            name = val.get(NAME)
-            function = self.interpreter.get_only_func(name)
-            return Element(
-                InterpreterBase.LAMBDA_DEF,
-                args=deepcopy(function.get(ARGS)),
-                statements=deepcopy(function.get(STATEMENTS)),
-                lambda_ind=self.interpreter.get_lambda_ind(),
-            )
-        if val.elem_type == InterpreterBase.LAMBDA_DEF:
-            return Element(
-                InterpreterBase.LAMBDA_DEF,
-                args=deepcopy(val.get(ARGS)),
-                statements=deepcopy(val.get(STATEMENTS)),
-                lambda_ind=self.interpreter.get_lambda_ind(),
-            )
         return deepcopy(val)
 
     def dump_info(self):
@@ -127,8 +111,6 @@ class Statement:
             if var_func.elem_type == InterpreterBase.FUNC_DEF:
                 base_func_name = var_func.get(NAME)
                 return self.interpreter.get_func(base_func_name, num_args)
-            elif var_func.elem_type == InterpreterBase.LAMBDA_DEF:
-                return var_func
             else:
                 self.error(
                     ErrorType.NAME_ERROR,
@@ -160,19 +142,6 @@ class Statement:
         ):
             self.error(
                 ErrorType.TYPE_ERROR, f"Got a string when expected another datatype"
-            )
-            return NIL_VAL
-        if type == InterpreterBase.NIL_DEF and not (exp_type in UNARY_NIL_OPERATORS):
-            self.error(
-                ErrorType.TYPE_ERROR, f"Got a nil when expected another datatype"
-            )
-            return NIL_VAL
-        if (
-            type == InterpreterBase.FUNC_DEF or type == InterpreterBase.LAMBDA_DEF
-        ) and not (exp_type in UNARY_FUNC_AND_LAMBDA_OPERATORS):
-            self.error(
-                ErrorType.TYPE_ERROR,
-                f"Got a function or lambda when expected another datatype",
             )
             return NIL_VAL
         if exp_type == InterpreterBase.NEG_DEF:
@@ -228,19 +197,6 @@ class Statement:
         ):
             self.error(
                 ErrorType.TYPE_ERROR, f"Got a string when expected another datatype"
-            )
-            return NIL_VAL
-        if type1 == InterpreterBase.NIL_DEF and not (exp_type in BINARY_NIL_OPERATORS):
-            self.error(
-                ErrorType.TYPE_ERROR, f"Got a nil when expected another datatype"
-            )
-            return NIL_VAL
-        if (
-            type1 == InterpreterBase.FUNC_DEF or type1 == InterpreterBase.LAMBDA_DEF
-        ) and not (exp_type in BINARY_FUNC_AND_LAMBDA_OPERATORS):
-            self.error(
-                ErrorType.TYPE_ERROR,
-                f"Got a function or lambda when expected another datatype",
             )
             return NIL_VAL
         if exp_type == ADD:
@@ -320,14 +276,6 @@ class Statement:
                 ErrorType.TYPE_ERROR, f"Got a nil when expected another datatype"
             )
             return NIL_VAL
-        if (
-            type1 == InterpreterBase.FUNC_DEF or type1 == InterpreterBase.LAMBDA_DEF
-        ) and not (exp_type in COMPARISON_FUNC_AND_LAMBDA_OPERATORS):
-            self.error(
-                ErrorType.TYPE_ERROR,
-                f"Got a function or lambda when expected another datatype",
-            )
-            return NIL_VAL
         if exp_type == EQUALS:
             if type1 != type2:
                 # Handling casting ints to bools
@@ -353,11 +301,6 @@ class Statement:
             if type1 == InterpreterBase.FUNC_DEF:
                 return Element(
                     InterpreterBase.BOOL_DEF, val=(val1.get(NAME) == val2.get(NAME))
-                )
-            if type1 == InterpreterBase.LAMBDA_DEF:
-                return Element(
-                    InterpreterBase.BOOL_DEF,
-                    val=(val1.get(LAMBDA_IND) == val2.get(LAMBDA_IND)),
                 )
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE))
@@ -387,11 +330,6 @@ class Statement:
             if type1 == InterpreterBase.FUNC_DEF:
                 return Element(
                     InterpreterBase.BOOL_DEF, val=(val1.get(NAME) != val2.get(NAME))
-                )
-            if type1 == InterpreterBase.LAMBDA_DEF:
-                return Element(
-                    InterpreterBase.BOOL_DEF,
-                    val=(val1.get(LAMBDA_IND) != val2.get(LAMBDA_IND)),
                 )
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) != val2.get(VALUE))
@@ -439,8 +377,6 @@ class Statement:
                 return self.evaluate_binary_operation(expression)
             if expression_type in COMPARISON_OPERATORS:
                 return self.evaluate_comparison_operation(expression)
-        if expression_type == InterpreterBase.LAMBDA_DEF:
-            return expression
         self.error(
             ErrorType.TYPE_ERROR, f"Expression type {expression_type} not recognized"
         )
@@ -452,15 +388,6 @@ class Statement:
         value = self.evaluate_expression(value)
         if self.trace_output:
             print(f"Running assignment {name} = {str(value)}")
-        if value.elem_type == InterpreterBase.LAMBDA_DEF and not (
-            value.get(LAMBDA_IND)
-        ):
-            value = Element(
-                InterpreterBase.LAMBDA_DEF,
-                args=value.get(ARGS),
-                statements=value.get(STATEMENTS),
-                lambda_ind=self.interpreter.get_lambda_ind(),
-            )
         # The current scope is just the assignment statement, thus we need to assign it in the scope of the parent statement
         self.parent_statement.set_var(name, value)
         return NIL_VAL
@@ -521,15 +448,21 @@ class Statement:
                 return returned_val
         return NIL_VAL
 
-    def load_args(self, arg_names, args):
+    def run_function(self) -> Element:
         if self.trace_output:
-            print(f"Loading arguments {str(args)}")
-        if len(arg_names) != len(args):
-            self.error(
-                ErrorType.TYPE_ERROR,
-                f"Expected {len(arg_names)} arguments, got {len(args)}",
-            )
-            return
+            print(f"Running function {str(self.statement_node)}")
+        args = self.statement_node.get(ARGS)
+        num_args = len(args)
+        # Getting the function from the interpreter
+        function_name = self.statement_node.get(NAME)
+        function = self.get_func(function_name, num_args)
+        true_name = self.interpreter.get_func_name(function)
+        if self.interpreter.is_preloaded(true_name):
+            new_node = Element(function_name, args=args)
+            new_statement = Statement(self.interpreter, self, new_node)
+            return new_statement.run()
+        # arg names
+        arg_names = function.get(ARGS)
         for i in range(len(args)):
             if arg_names[i].elem_type == InterpreterBase.ARG_DEF:
                 self.add_var(arg_names[i].get(NAME), self.evaluate_expression(args[i]))
@@ -545,22 +478,6 @@ class Statement:
                         arg_names[i].get(NAME), self.evaluate_expression(args[i])
                     )
 
-    def run_function(self) -> Element:
-        if self.trace_output:
-            print(f"Running function {str(self.statement_node)}")
-        args = self.statement_node.get(ARGS)
-        num_args = len(args)
-        # Getting the function from the interpreter
-        function_name = self.statement_node.get(NAME)
-        function = self.get_func(function_name, num_args)
-        if function.elem_type == InterpreterBase.FUNC_DEF:
-            true_name = self.interpreter.get_func_name(function)
-            if self.interpreter.is_preloaded(true_name):
-                new_node = Element(function_name, args=args)
-                new_statement = Statement(self.interpreter, self, new_node)
-                return new_statement.run()
-        # Loading the args
-        self.load_args(function.get(ARGS), args)
         if self.trace_output:
             print(f"Running function {function_name} with {num_args} arguments")
         # Running the function
@@ -570,7 +487,6 @@ class Statement:
         returned_val = self.run_statements(statements)
         if returned_val.elem_type == InterpreterBase.RETURN_DEF:
             return returned_val.get(RETURNED)
-        self.error(ErrorType.TYPE_ERROR, f"Function {function_name} did not return")
 
     def eval_conditional(self, condition: Element) -> bool:
         if self.trace_output:
