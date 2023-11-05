@@ -12,7 +12,7 @@ class Statement:
         self.trace_output = interpreter.trace_output
         self.interpreter = interpreter
         self.statement_node = statement_node
-        if not statement_node.elem_type in STATEMENT_TYPES:
+        if not self.type in STATEMENT_TYPES:
             interpreter.error(
                 ErrorType.TYPE_ERROR,
                 f"Statement type {statement_node.elem_type} not recognized",
@@ -27,6 +27,24 @@ class Statement:
         # Because we can't declare functions within the statement of other functions, this is fine
         self.var_map = {}
 
+    def get_copy_of_scope(self) -> dict:
+        if self.trace_output:
+            print("Getting copy of scope")
+        if not self.parent_statement:
+            return deepcopy(self.var_map)
+        parent_scope = self.parent_statement.get_copy_of_scope()
+        for key, value in self.var_map.items():
+            parent_scope[deepcopy(key)] = deepcopy(value)
+        return parent_scope
+
+    def copy_scope_to(self, other_statement):
+        if self.trace_output:
+            print("Copying scope")
+        scope_copy = self.get_copy_of_scope()
+        for key in scope_copy.keys():
+            value = scope_copy[key]
+            other_statement.var_map[key] = value
+
     def error(self, error_type: ErrorType, message: str) -> None:
         if self.trace_output:
             self.dump_info()
@@ -40,6 +58,11 @@ class Statement:
                 name=val.get(NAME),
                 func_ind=self.interpreter.get_func_ind(),
             )
+        if val.elem_type == LAMBDA_PTR:
+            old_lambda = self.interpreter.get_lambda(val.get(LAMBDA_PTR))
+            new_lambda = deepcopy(old_lambda)
+            new_ind = self.interpreter.add_lambda(new_lambda)
+            return Element(LAMBDA_PTR, lambda_ptr=new_ind)
         return deepcopy(val)
 
     def dump_info(self):
@@ -122,6 +145,9 @@ class Statement:
             if var_func.elem_type == InterpreterBase.FUNC_DEF:
                 base_func_name = var_func.get(NAME)
                 return self.interpreter.get_func(base_func_name, num_args)
+            if var_func.elem_type == LAMBDA_PTR:
+                lambda_ind = var_func.get(LAMBDA_PTR)
+                return self.interpreter.get_lambda(lambda_ind)
             else:
                 self.error(
                     ErrorType.NAME_ERROR,
@@ -315,6 +341,11 @@ class Statement:
                     val=(val1.get(FUNC_IND) == val2.get(FUNC_IND))
                     and (val1.get(NAME) == val2.get(NAME)),
                 )
+            if type1 == LAMBDA_PTR:
+                return Element(
+                    InterpreterBase.BOOL_DEF,
+                    val=(val1.get(LAMBDA_PTR) == val2.get(LAMBDA_PTR)),
+                )
             return Element(
                 InterpreterBase.BOOL_DEF, val=(val1.get(VALUE) == val2.get(VALUE))
             )
@@ -392,6 +423,21 @@ class Statement:
                 return self.evaluate_binary_operation(expression)
             if expression_type in COMPARISON_OPERATORS:
                 return self.evaluate_comparison_operation(expression)
+        if expression_type == InterpreterBase.LAMBDA_DEF:
+            scoped_statement = Statement(
+                self.interpreter, None, Element(InterpreterBase.LAMBDA_DEF)
+            )
+            self.copy_scope_to(scoped_statement)
+            statements = expression.get(STATEMENTS)
+            statements.append(Element(InterpreterBase.RETURN_DEF))
+            new_element = Element(
+                InterpreterBase.LAMBDA_DEF,
+                scope=scoped_statement,
+                args=expression.get(ARGS),
+                statements=statements,
+            )
+            lambda_ind = self.interpreter.add_lambda(new_element)
+            return Element(LAMBDA_PTR, lambda_ptr=lambda_ind)
         self.error(
             ErrorType.TYPE_ERROR, f"Expression type {expression_type} not recognized"
         )
@@ -463,22 +509,14 @@ class Statement:
                 return returned_val
         return NIL_VAL
 
-    def run_function(self) -> Element:
-        if self.trace_output:
-            print(f"Running function {str(self.statement_node)}")
-        args = self.statement_node.get(ARGS)
-        num_args = len(args)
-        # Getting the function from the interpreter
-        function_name = self.statement_node.get(NAME)
-        function = self.get_func(function_name, num_args)
-        true_name = self.interpreter.get_func_name(function)
-        if self.interpreter.is_preloaded(true_name):
-            new_node = Element(function_name, args=args)
-            new_statement = Statement(self.interpreter, self, new_node)
-            return new_statement.run()
-        # arg names
-        arg_names = function.get(ARGS)
-        for i in range(len(args)):
+    def load_args(self, arg_names, args):
+        if len(arg_names) != len(args):
+            self.error(
+                ErrorType.TYPE_ERROR,
+                f"Expected {len(arg_names)} arguments, got {len(args)}",
+            )
+            return NIL_VAL
+        for i in range(len(arg_names)):
             if arg_names[i].elem_type == InterpreterBase.ARG_DEF:
                 self.add_var(arg_names[i].get(NAME), self.evaluate_expression(args[i]))
             elif arg_names[i].elem_type == InterpreterBase.REFARG_DEF:
@@ -493,6 +531,23 @@ class Statement:
                         arg_names[i].get(NAME), self.evaluate_expression(args[i])
                     )
 
+    def run_function(self, function) -> Element:
+        if self.trace_output:
+            print(f"Running function {str(self.statement_node)}")
+        args = self.statement_node.get(ARGS)
+        num_args = len(args)
+        # Getting the function from the interpreter
+        function_name = self.statement_node.get(NAME)
+        true_name = self.interpreter.get_func_name(function)
+        if self.interpreter.is_preloaded(true_name):
+            new_node = Element(function_name, args=args)
+            new_statement = Statement(self.interpreter, self, new_node)
+            return new_statement.run()
+        # arg names
+        arg_names = function.get(ARGS)
+        # Loading the arguments into the function's scope
+        self.load_args(arg_names, args)
+
         if self.trace_output:
             print(f"Running function {function_name} with {num_args} arguments")
         # Running the function
@@ -502,6 +557,39 @@ class Statement:
         returned_val = self.run_statements(statements)
         if returned_val.elem_type == InterpreterBase.RETURN_DEF:
             return returned_val.get(RETURNED)
+        self.error("Function did not return anything")
+        return NIL_VAL
+
+    def run_lambda(self, lambda_func) -> Element:
+        if self.trace_output:
+            print(f"Running lambda {str(self.statement_node)}")
+        # Getting the lambda from the lambda pointer
+        args = self.statement_node.get(ARGS)
+        arg_names = lambda_func.get(ARGS)
+        self.load_args(arg_names, args)
+        # Loading the scope
+        lambda_scope = lambda_func.get(SCOPE)
+        lambda_scope.parent_statement = self
+        lambda_scope.statement_node = Element(
+            InterpreterBase.LAMBDA_DEF, statements=lambda_func.get(STATEMENTS)
+        )
+        returned_val = lambda_scope.run_statements(lambda_func.get(STATEMENTS))
+        if returned_val.elem_type == InterpreterBase.RETURN_DEF:
+            return returned_val.get(RETURNED)
+        self.error("Lambda did not return anything")
+
+    def run_fcall(self) -> Element:
+        if self.trace_output:
+            print(f"Running fcall {str(self.statement_node)}")
+        function = self.get_func(
+            self.statement_node.get(NAME), len(self.statement_node.get(ARGS))
+        )
+        if function.elem_type == InterpreterBase.FUNC_DEF:
+            # print("Starting the dump")
+            # self.dump_info()
+            return self.run_function(function)
+        if function.elem_type == InterpreterBase.LAMBDA_DEF:
+            return self.run_lambda(function)
 
     def eval_conditional(self, condition: Element) -> bool:
         if self.trace_output:
@@ -577,11 +665,17 @@ class Statement:
             if name in self.interpreter.preloaded_funcs:
                 new_statement = Statement(self.interpreter, self, Element(elem_type=name, args=self.statement_node.get(ARGS)))
                 return new_statement.run()"""
-            return self.run_function()
+            return self.run_fcall()
         if self.type == InterpreterBase.IF_DEF:
             return self.run_if()
         if self.type == InterpreterBase.WHILE_DEF:
             return self.run_while()
+        if self.type == InterpreterBase.LAMBDA_DEF:
+            returned = self.run_statements(self.statement_node.get(STATEMENTS))
+            if returned.elem_type == InterpreterBase.RETURN_DEF:
+                return returned.get(RETURNED)
+            self.error("No return statement in lambda")
+            return NIL_VAL
         if self.trace_output:
             self.dump_info()
         self.error(ErrorType.TYPE_ERROR, f"Statement type {self.type} not recognized")

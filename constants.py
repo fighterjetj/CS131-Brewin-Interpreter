@@ -85,6 +85,7 @@ STATEMENT_TYPES = [
     InterpreterBase.RETURN_DEF,
 ]
 STATEMENT_TYPES += PRELOADED_FUNCS
+STATEMENT_TYPES += [InterpreterBase.LAMBDA_DEF]
 EXPRESSION_TYPES = [InterpreterBase.FCALL_DEF] + OPERATORS
 VALUE_TYPES = [
     InterpreterBase.INT_DEF,
@@ -97,3 +98,5 @@ CONDITION = "condition"
 RETURNED = "returned"
 RETURNED_NIL_VAL = Element(InterpreterBase.RETURN_DEF, val=NIL_VAL)
 FUNC_IND = "func_ind"
+LAMBDA_PTR = "lambda_ptr"
+SCOPE = "scope"

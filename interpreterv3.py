@@ -12,6 +12,14 @@ class Interpreter(InterpreterBase):
         self.preloaded_funcs = set()
         self.trace_output = trace_output
         self.func_ind = 0
+        self.lambdas = []
+
+    def add_lambda(self, lambda_func):
+        self.lambdas.append(lambda_func)
+        return len(self.lambdas) - 1
+
+    def get_lambda(self, index):
+        return self.lambdas[index]
 
     def get_func_ind(self):
         self.func_ind += 1

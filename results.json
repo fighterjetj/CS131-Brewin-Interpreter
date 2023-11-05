@@ -32,13 +32,13 @@
         },
         {
             "name": "Correctness | test_lambda",
-            "score": 0,
+            "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
             "name": "Correctness | test_lambda_comp",
-            "score": 0,
+            "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
