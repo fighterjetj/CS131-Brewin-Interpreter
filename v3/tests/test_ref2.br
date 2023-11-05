@@ -1,3 +1,4 @@
+
 func bar(ref c) {
   c = c + 1;
 }

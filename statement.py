@@ -159,7 +159,7 @@ class Statement:
                 return self.interpreter.get_lambda(lambda_ind)
             else:
                 self.error(
-                    ErrorType.NAME_ERROR,
+                    ErrorType.TYPE_ERROR,
                     f"Variable {name} exists but is not a function",
                 )
                 return NIL_VAL
@@ -575,9 +575,9 @@ class Statement:
         # Getting the lambda from the lambda pointer
         args = self.statement_node.get(ARGS)
         arg_names = lambda_func.get(ARGS)
-        self.load_args(arg_names, args)
         # Loading the scope
         lambda_scope = lambda_func.get(SCOPE)
+        lambda_scope.load_args(arg_names, args)
         lambda_scope.parent_statement = self
         lambda_scope.statement_node = Element(
             InterpreterBase.LAMBDA_DEF, statements=lambda_func.get(STATEMENTS)

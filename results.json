@@ -1,37 +1,13 @@
 {
     "tests": [
         {
-            "name": "Correctness | test_deep_copy_return",
+            "name": "Correctness | test_func_with_val2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_return_func",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Correctness | test_pass_by_ref1",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Correctness | test_type_coercion",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Correctness | test_deep_copy_func_return2",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Correctness | test_lambda",
+            "name": "Correctness | test_promo1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -43,55 +19,37 @@
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_lambda_comp",
+            "name": "Correctness | test_func_comp1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_compare_funcs",
+            "name": "Correctness | test_lambda_shadow7",
+            "score": 0,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_lambda_with_val1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_deep_copy_func_return1",
+            "name": "Incorrectness | test_bad_func_ops1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_store_func_in_var",
+            "name": "Incorrectness | test_bad_func1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_pass_by_ref3",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Correctness | test_pass_by_ref2",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_store_overloaded_func",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_dynamic_scoping1",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_capture_scope",
+            "name": "Incorrectness | test_overload2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
