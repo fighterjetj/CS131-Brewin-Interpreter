@@ -149,8 +149,9 @@ class Statement:
         if self.trace_output:
             print(f"Getting function {name} with {num_args} arguments")
         var_func_scope = self.get_var_scope(name)
+        real_name = self.follow_ref_to_name(name)
         if var_func_scope:
-            var_func = var_func_scope.get_var(name)
+            var_func = var_func_scope.get_var(real_name)
             if var_func.elem_type == InterpreterBase.FUNC_DEF:
                 base_func_name = var_func.get(NAME)
                 return self.interpreter.get_func(base_func_name, num_args)
@@ -572,6 +573,7 @@ class Statement:
     def run_lambda(self, lambda_func) -> Element:
         if self.trace_output:
             print(f"Running lambda {str(self.statement_node)}")
+            print(f"Lambda function: {str(lambda_func)}")
         # Getting the lambda from the lambda pointer
         args = self.statement_node.get(ARGS)
         arg_names = lambda_func.get(ARGS)
@@ -582,10 +584,9 @@ class Statement:
         lambda_scope.statement_node = Element(
             InterpreterBase.LAMBDA_DEF, statements=lambda_func.get(STATEMENTS)
         )
-        returned_val = lambda_scope.run_statements(lambda_func.get(STATEMENTS))
-        if returned_val.elem_type == InterpreterBase.RETURN_DEF:
-            return returned_val.get(RETURNED)
-        self.error("Lambda did not return anything")
+        lambda_scope.interpreter = self.interpreter
+        returned_val = lambda_scope.run()
+        return returned_val
 
     def run_fcall(self) -> Element:
         if self.trace_output:
