@@ -2,6 +2,7 @@ from constants import *
 import convert_element
 from eval_mult_statements import eval_mult_statements
 import return_type
+from intbase import ErrorType
 
 
 class Conditional:
@@ -27,7 +28,10 @@ class Conditional:
             condition_met.get_type() != InterpreterBase.BOOL_DEF
             and condition_met.get_type() != InterpreterBase.INT_DEF
         ):
-            raise Exception(f"Expected boolean or nil, got {condition_met.get_type()}")
+            self.scope.error(
+                ErrorType.TYPE_ERROR,
+                f"Expected boolean or int, got {condition_met.get_type()}",
+            )
         if condition_met.get_val():
             returned_val = eval_mult_statements(self.statements, self.scope)
             if type(returned_val) == return_type.Return:

@@ -97,6 +97,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Incorrectness | test_func_cond",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Incorrectness | test_bad_func_ops1",
             "score": 1,
             "max_score": 1,
@@ -116,6 +122,18 @@
         },
         {
             "name": "Incorrectness | test_bad_ops_call1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_bad_func_ops2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_invalid_func_name",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
