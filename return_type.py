@@ -26,7 +26,7 @@ class Return:
             )
 
     def get_val(self):
-        return self.value.evaluate()
+        return self.value.evaluate().copy()
 
     def evaluate(self):
         return self
