@@ -110,7 +110,7 @@ class Scope:
         self.__functions[func_name][num_args] = ValueWrapper(func)
 
     def add_ref_func(self, func, func_name):
-        num_args = len(func.get_args())
+        num_args = len(func.get_val().get_args())
         # If this isn't a value wrapper, it isn't a ref
         if type(func) != ValueWrapper:
             raise Exception("Expected ValueWrapper")
@@ -147,6 +147,26 @@ class Scope:
             for num_args in self.__functions[func]:
                 new_scope.add_new_func(
                     self.__functions[func][num_args].get_val(), deepcopy(func)
+                )
+        new_scope.trace_output = self.trace_output
+        return new_scope
+
+    def shallow_copy(self):
+        if self.trace_output:
+            print("Shallow copying scope")
+            print(f"Vars: {self.__var_map}")
+            print(f"Functions: {self.__functions}")
+        if self.parent_scope is None:
+            new_scope = Scope(None)
+        else:
+            parent_copy = self.parent_scope.shallow_copy()
+            new_scope = Scope(parent_copy)
+        for var in self.__var_map.keys():
+            new_scope.add_ref_var(var, self.get_var_ref(var))
+        for func_name in self.__functions.keys():
+            for num_args in self.__functions[func_name]:
+                new_scope.add_ref_func(
+                    self.get_func_ref(func_name, num_args), func_name
                 )
         new_scope.trace_output = self.trace_output
         return new_scope

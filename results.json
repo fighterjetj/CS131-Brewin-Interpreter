@@ -79,6 +79,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | mega_test",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | pass_by_reference_lambda",
             "score": 1,
             "max_score": 1,

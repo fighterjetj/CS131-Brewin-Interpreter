@@ -25,6 +25,7 @@ class FunctionDef:
             raise Exception(f"Expected function definition, got {element.elem_type}")
         self.statements = element.get(STATEMENTS)
         self.statements.append(Element(InterpreterBase.RETURN_DEF))
+        # print(f"Statements: {[str(statement) for statement in self.statements]}")
         old_args = element.get(ARGS)
         self.args = []
         for arg in old_args:
