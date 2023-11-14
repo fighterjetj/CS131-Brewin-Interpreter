@@ -13,9 +13,7 @@ class Conditional:
         self.__load_element(element)
 
     def __load_element(self, element):
-        self.condition = convert_element.convert_element(
-            element.get(CONDITION), self.scope
-        )
+        self.condition = element.get(CONDITION)
         self.statements = element.get(STATEMENTS)
         self.else_statements = element.get(ELSE_STATEMENTS)
         self.has_else = self.else_statements != None
@@ -23,7 +21,9 @@ class Conditional:
     def evaluate(self):
         if self.trace_output:
             print(f"Evaluating {str(self)}")
-        condition_met = self.condition.evaluate()
+        condition_met = convert_element.convert_element(
+            self.condition, self.scope
+        ).evaluate()
         if (
             condition_met.get_type() != InterpreterBase.BOOL_DEF
             and condition_met.get_type() != InterpreterBase.INT_DEF
@@ -38,6 +38,7 @@ class Conditional:
                 return returned_val
             # If we are a while loop we evaluate again
             if self.is_while:
+                print(str(self.condition))
                 return self.evaluate()
         elif self.has_else:
             returned_val = eval_mult_statements(self.else_statements, self.scope)
