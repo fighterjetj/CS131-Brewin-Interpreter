@@ -55,7 +55,7 @@ class Scope:
             and type(value) != LambdaDef
             and type(value) != FunctionDef
         ):
-            self.error(ErrorType.TYPE_ERROR, f"Expected Value, got {type(value)}")
+            raise Exception(f"Expected  savable Value, got {type(value)}")
         if self.trace_output:
             print(f"Setting {var_name} to {value}")
         scope = self.get_var_scope(var_name)

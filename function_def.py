@@ -32,7 +32,7 @@ class FunctionDef:
 
     def load_args(self, scope, args):
         if len(args) != len(self.args):
-            self.error(ErrorType.NAME_ERROR, "Incorrect number of arguments")
+            scope.error(ErrorType.TYPE_ERROR, "Incorrect number of arguments")
         for i in range(len(args)):
             arg = self.args[i]
             if arg.is_ref():
