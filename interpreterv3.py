@@ -8,6 +8,7 @@ from constants import *
 class Interpreter(InterpreterBase):
     def __init__(self, console_output=True, inp=None, trace_output=False):
         super().__init__(console_output, inp)
+        self.trace_output = trace_output
 
     def error(self, error_type: ErrorType, message: str) -> None:
         super().error(error_type, message)
@@ -32,6 +33,6 @@ class Interpreter(InterpreterBase):
         for function in root_node.get(FUNCTIONS):
             base_scope.add_new_func(convert_element(function), function.get(NAME))
         func_call = convert_element(
-            Element(func_call, name="main", args=[]), base_scope
+            Element(InterpreterBase.FCALL_DEF, name="main", args=[]), base_scope
         )
         func_call.evaluate()

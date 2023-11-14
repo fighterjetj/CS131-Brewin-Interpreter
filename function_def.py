@@ -3,7 +3,7 @@ import convert_element
 from intbase import InterpreterBase
 from intbase import ErrorType
 from element import Element
-from return_type import Return
+import return_type
 from eval_mult_statements import eval_mult_statements
 from copy import deepcopy
 
@@ -18,32 +18,37 @@ class FunctionDef:
             print(f"Loading element {str(element)}")
         if type(element) != Element:
             raise Exception(f"Expected Element, got {type(element)}")
-        if element.elem_type != InterpreterBase.FUNCTION_DEF:
+        if (
+            element.elem_type != InterpreterBase.FUNC_DEF
+            and element.elem_type != InterpreterBase.LAMBDA_DEF
+        ):
             raise Exception(f"Expected function definition, got {element.elem_type}")
         self.statements = element.get(STATEMENTS)
-        self.statements.append(element(InterpreterBase.RETURN_DEF))
+        self.statements.append(Element(InterpreterBase.RETURN_DEF))
         old_args = element.get(ARGS)
         self.args = []
         for arg in old_args:
             self.args.append(convert_element.convert_element(arg, None))
 
-    def invoke_func(self, scope, args):
-        new_scope = scope.make_child_scope()
+    def load_args(self, scope, args):
         if len(args) != len(self.args):
             self.error(ErrorType.NAME_ERROR, "Incorrect number of arguments")
         for i in range(len(args)):
             arg = self.args[i]
             if arg.is_ref():
+                # If it isn't a variable, the reference is meaningless
                 if args[i].get_type() == InterpreterBase.VAR_DEF:
-                    new_scope.add_ref_var(arg.get_name(), args[i].get_ref())
+                    scope.add_ref_var(arg.get_name(), args[i].get_ref())
+                else:
+                    scope.add_new_var(arg.get_name(), args[i].evaluate())
             else:
-                new_scope.add_new_var(arg.get_name(), args[i].evaluate().copy())
-        conv_statements = [
-            convert_element.convert_element(statement, new_scope)
-            for statement in self.statements
-        ]
-        return_val = eval_mult_statements(conv_statements)
-        if type(return_val) == Return:
+                scope.add_new_var(arg.get_name(), args[i].evaluate().copy())
+
+    def invoke_func(self, scope, args):
+        new_scope = scope.make_child_scope()
+        self.load_args(new_scope, args)
+        return_val = eval_mult_statements(self.statements, new_scope)
+        if type(return_val) == return_type.Return:
             return return_val.get_val()
         raise Exception("No return statement found")
 

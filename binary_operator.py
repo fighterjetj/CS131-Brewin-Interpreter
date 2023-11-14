@@ -60,6 +60,11 @@ class BinaryOperator:
         left_type = self.left.get_type()
         right_type = self.right.get_type()
         if left_type == right_type:
+            if (
+                left_type == InterpreterBase.FUNC_DEF
+                or left_type == InterpreterBase.LAMBDA_DEF
+            ):
+                return Value(self.left is self.right)
             return Value(self.left.get_val() == self.right.get_val())
         # If we have a bool and an int we compare their bool values
         if (
@@ -163,7 +168,7 @@ class BinaryOperator:
             self.left.get_type() == InterpreterBase.STRING_DEF
             and self.right.get_type() == InterpreterBase.STRING_DEF
         ):
-            return Value(self.left.get_val() + self.right.get_value())
+            return Value(self.left.get_val() + self.right.get_val())
         self.scope.error(
             ErrorType.TYPE_ERROR,
             f"Cannot add {self.left.get_type()} and {self.right.get_type()}",

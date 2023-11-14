@@ -40,6 +40,6 @@ def convert_element(element, scope=None):
         return return_type.Return(scope, element)
     if elem_type == InterpreterBase.VAR_DEF:
         return variable.Variable(scope, element)
-    if elem_type == InterpreterBase.FUNC_CALL:
+    if elem_type == InterpreterBase.FCALL_DEF:
         return func_call.FuncCall(scope, element)
     raise Exception(f"Unknown element type {elem_type}")

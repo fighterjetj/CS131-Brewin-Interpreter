@@ -1,7 +1,7 @@
 from constants import *
 import convert_element
 from eval_mult_statements import eval_mult_statements
-from return_type import Return
+import return_type
 
 
 class Conditional:
@@ -15,20 +15,9 @@ class Conditional:
         self.condition = convert_element.convert_element(
             element.get(CONDITION), self.scope
         )
-        self.cond_statements = [
-            convert_element.convert_element(statement, self.scope)
-            for statement in element.get(STATEMENTS)
-        ]
-        # If this is a while loop and not an if statement, we must invoke it again at the end if the conditional is met
-        if self.is_while:
-            self.cond_statements.append(self)
+        self.statements = element.get(STATEMENTS)
         self.else_statements = element.get(ELSE_STATEMENTS)
         self.has_else = self.else_statements != None
-        if self.has_else:
-            self.else_statements = [
-                convert_element.convert_element(statement, self.scope)
-                for statement in self.else_statements
-            ]
 
     def evaluate(self):
         if self.trace_output:
@@ -36,14 +25,17 @@ class Conditional:
         condition_met = self.condition.evaluate()
         if (
             condition_met.get_type() != InterpreterBase.BOOL_DEF
-            or condition_met.get_type() != InterpreterBase.INT_DEF
+            and condition_met.get_type() != InterpreterBase.INT_DEF
         ):
-            raise Exception(f"Expected boolean or nil, got {self.condition.get_type()}")
-        if self.condition.get_val():
-            returned_val = eval_mult_statements(self.cond_statements)
-            if type(returned_val) == Return:
+            raise Exception(f"Expected boolean or nil, got {condition_met.get_type()}")
+        if condition_met.get_val():
+            returned_val = eval_mult_statements(self.statements, self.scope)
+            if type(returned_val) == return_type.Return:
                 return returned_val
+            # If we are a while loop we evaluate again
+            if self.is_while:
+                return self.evaluate()
         elif self.has_else:
-            returned_val = eval_mult_statements(self.else_statements)
-            if type(returned_val) == Return:
+            returned_val = eval_mult_statements(self.else_statements, self.scope)
+            if type(returned_val) == return_type.Return:
                 return returned_val

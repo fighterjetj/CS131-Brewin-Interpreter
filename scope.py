@@ -24,10 +24,10 @@ class Scope:
             return self
         if self.parent_scope is None:
             return None
-        return self.parent_scope.get_scope(var_name)
+        return self.parent_scope.get_var_scope(var_name)
 
     def get_var_ref(self, var_name):
-        scope = self.get_scope(var_name)
+        scope = self.get_var_scope(var_name)
         if scope is None:
             # Checking for functions that aren't overloaded with the same name
             func_scope = self.get_func_scope(var_name, -1)
@@ -38,7 +38,7 @@ class Scope:
         return scope.__var_map[var_name]
 
     def get_var(self, var_name):
-        return self.get_var_ref(var_name).get_value()
+        return self.get_var_ref(var_name).get_val()
 
     def add_new_var(self, var_name, value):
         self.__var_map[var_name] = ValueWrapper(value)
@@ -50,11 +50,15 @@ class Scope:
         self.__var_map[var_name] = value
 
     def set_var(self, var_name, value):
-        if type(value) != Value and type(value) != LambdaDef:
+        if (
+            type(value) != Value
+            and type(value) != LambdaDef
+            and type(value) != FunctionDef
+        ):
             self.error(ErrorType.TYPE_ERROR, f"Expected Value, got {type(value)}")
         if self.trace_output:
             print(f"Setting {var_name} to {value}")
-        scope = self.get_scope(var_name)
+        scope = self.get_var_scope(var_name)
         if scope is None:
             self.add_new_var(var_name, value)
         else:
@@ -62,13 +66,18 @@ class Scope:
 
     def get_func_scope(self, func_name, num_args):
         if func_name in self.__functions:
+            if num_args == -1:
+                if len(self.__functions[func_name]) == 1:
+                    return self
+                else:
+                    return None
             if num_args in self.__functions[func_name]:
                 return self
             if self.trace_output:
                 print(f"Function {func_name} exists but with different number of args")
         if self.parent_scope is None:
             return None
-        return self.parent_scope.get_func_scope(func_name)
+        return self.parent_scope.get_func_scope(func_name, num_args)
 
     def get_func_ref(self, func_name, num_args):
         scope = self.get_func_scope(func_name, num_args)
@@ -77,24 +86,27 @@ class Scope:
             var_scope = self.get_var_scope(func_name)
             if var_scope is None:
                 self.error(ErrorType.NAME_ERROR, f"Function {func_name} not defined")
-            func = var_scope.get_var(func_name)
+            func_ref = var_scope.get_var_ref(func_name)
+            func_type = func_ref.get_val().get_type()
             if (
-                func.get_type() != InterpreterBase.LAMBDA_DEF
-                and func.get_type() != InterpreterBase.FUNC_DEF
+                func_type != InterpreterBase.LAMBDA_DEF
+                and func_type != InterpreterBase.FUNC_DEF
             ):
                 self.error(
-                    ErrorType.NAME_ERROR,
+                    ErrorType.TYPE_ERROR,
                     f"{func_name} is defined but not as a function",
                 )
                 return
-            return func
+            return func_ref
         return scope.__functions[func_name][num_args]
 
     def get_func(self, func_name, num_args):
-        return self.get_func_ref(func_name, num_args).get_value()
+        return self.get_func_ref(func_name, num_args).get_val()
 
     def add_new_func(self, func, func_name):
         num_args = len(func.get_args())
+        if func_name not in self.__functions:
+            self.__functions[func_name] = {}
         self.__functions[func_name][num_args] = ValueWrapper(func)
 
     def add_ref_func(self, func, func_name):
@@ -102,6 +114,8 @@ class Scope:
         # If this isn't a value wrapper, it isn't a ref
         if type(func) != ValueWrapper:
             raise Exception("Expected ValueWrapper")
+        if func_name not in self.__functions:
+            self.__functions[func_name] = {}
         self.__functions[func_name][num_args] = func
 
     def set_func(self, func, func_name):
@@ -116,20 +130,38 @@ class Scope:
         else:
             scope.__functions[func_name][num_args].set_value(func)
 
-    def copy_scope(self):
-        return deepcopy(self)
+    def copy(self):
+        if self.trace_output:
+            print("Copying scope")
+            print(f"Vars: {self.__var_map}")
+            print(f"Functions: {self.__functions}")
+        if self.parent_scope is None:
+            new_scope = Scope(None)
+        else:
+            parent_copy = self.parent_scope.copy()
+            new_scope = Scope(parent_copy)
+        for var in self.__var_map.keys():
+            val = self.__var_map[var].get_val()
+            new_scope.add_new_var(var, deepcopy(val))
+        for func in self.__functions.keys():
+            for num_args in self.__functions[func]:
+                new_scope.add_new_func(
+                    self.__functions[func][num_args].get_val(), deepcopy(func)
+                )
+        new_scope.trace_output = self.trace_output
+        return new_scope
 
     def __dump_info(self):
-        print("Scope info:")
-        print(f"Vars: {self.__var_map}")
-        print(f"Functions: {self.__functions}")
+        print(str(self))
 
-    # Recursively finds the base scope and adds the passed scope as the new base scope
-    def add_base_scope(self, base_scope):
+    def get_base_scope(self):
         if self.parent_scope is None:
-            self.parent_scope = base_scope
-        else:
-            self.parent_scope.add_base_scope(base_scope)
+            return self
+        return self.parent_scope.get_base_scope()
+
+    # Finds the base scope and adds the passed scope as the new base scope
+    def add_base_scope(self, base_scope):
+        self.get_base_scope().parent_scope = base_scope
 
     def make_child_scope(self):
         return Scope(self)
@@ -138,3 +170,36 @@ class Scope:
         if self.trace_output:
             self.__dump_info()
         Scope.interpreter.error(error_type, message)
+
+    def output(self, args):
+        final_str = ""
+        for arg in args:
+            eval_arg = arg.evaluate()
+            if eval_arg.get_type() == InterpreterBase.NIL_DEF:
+                final_str += "nil"
+            elif eval_arg.get_type() == InterpreterBase.STRING_DEF:
+                final_str += eval_arg.get_val()
+            elif eval_arg.get_type() == InterpreterBase.INT_DEF:
+                final_str += str(eval_arg.get_val())
+            elif eval_arg.get_type() == InterpreterBase.BOOL_DEF:
+                final_str += "true" if eval_arg.get_val() else "false"
+            else:
+                print(args)
+                self.error(
+                    ErrorType.TYPE_ERROR,
+                    f"Expected Value, got {eval_arg.get_type()}",
+                )
+        Scope.interpreter.output(final_str)
+
+    def get_input(self):
+        return Scope.interpreter.get_input()
+
+    def __str__(self):
+        final_str = ""
+        final_str += "Scope info:\n"
+        final_str += f"Vars: {self.__var_map}\n"
+        final_str += f"Functions: {self.__functions}\n"
+        if self.parent_scope is not None:
+            final_str += "Parent Scope:\n"
+            final_str += str(self.parent_scope)
+        return final_str

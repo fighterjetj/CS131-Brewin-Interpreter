@@ -51,9 +51,6 @@ class Value:
     def get_type(self):
         return self.type
 
-    def set_val(self, element):
-        self.__load_element(element)
-
     def evaluate(self):
         return self
 

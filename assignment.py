@@ -15,7 +15,9 @@ class Assignment:
         if type(element) != Element or element.elem_type != ASSIGNMENT:
             raise Exception(f"Expected Element, got {type(element)}")
         self.name = element.get(NAME)
-        self.value = convert_element.convert_element(element.get(VALUE), self.scope)
+        self.value = convert_element.convert_element(
+            element.get(EXPRESSION), self.scope
+        )
 
     def evaluate(self):
         if self.trace_output:

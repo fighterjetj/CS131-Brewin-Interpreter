@@ -1,8 +1,10 @@
-from return_type import Return
+import return_type
+import convert_element
 
 
-def eval_mult_statements(statements):
+def eval_mult_statements(statements, scope):
     for statement in statements:
-        returned = statement.evaluate()
-        if type(returned) == Return:
+        proper_statement = convert_element.convert_element(statement, scope)
+        returned = proper_statement.evaluate()
+        if type(returned) == return_type.Return:
             return returned

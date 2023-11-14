@@ -18,7 +18,7 @@ class Variable:
         return self.name
 
     def get_ref(self):
-        return self.scope.get_ref_var(self.name)
+        return self.scope.get_var_ref(self.name)
 
     def get_type(self):
         return InterpreterBase.VAR_DEF

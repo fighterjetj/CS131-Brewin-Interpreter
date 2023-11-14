@@ -6,6 +6,11 @@ func main() {
  if (foo != nil) { print("Good"); }
  if (nil != a) { print("Good"); }
  if (nil != foo) { print("Good"); }
+ if (nil == foo) {
+    print("Hi");
+ } else {
+    print("Gooder");
+ }
 }
 
 /*
@@ -14,5 +19,6 @@ Good
 Good
 Good
 Good
+Gooder
 *OUT*
 */
