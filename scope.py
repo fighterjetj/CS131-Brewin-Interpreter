@@ -26,6 +26,9 @@ class Scope:
             return None
         return self.parent_scope.get_var_scope(var_name)
 
+    def is_var(self, var_name):
+        return self.get_var_scope(var_name) is not None
+
     def get_var_ref(self, var_name):
         scope = self.get_var_scope(var_name)
         if scope is None:

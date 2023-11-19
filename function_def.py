@@ -38,8 +38,11 @@ class FunctionDef:
             arg = self.args[i]
             if arg.is_ref():
                 # If it isn't a variable, the reference is meaningless
-                if args[i].get_type() == InterpreterBase.VAR_DEF:
+                if args[i].get_type() == InterpreterBase.VAR_DEF and scope.is_var(
+                    args[i].get_name()
+                ):
                     scope.add_ref_var(arg.get_name(), args[i].get_ref())
+                # We don't need to load functions again
                 else:
                     scope.add_new_var(arg.get_name(), args[i].evaluate())
             else:

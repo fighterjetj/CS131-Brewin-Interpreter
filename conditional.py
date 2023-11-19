@@ -38,7 +38,6 @@ class Conditional:
                 return returned_val
             # If we are a while loop we evaluate again
             if self.is_while:
-                print(str(self.condition))
                 return self.evaluate()
         elif self.has_else:
             returned_val = eval_mult_statements(self.else_statements, self.scope)

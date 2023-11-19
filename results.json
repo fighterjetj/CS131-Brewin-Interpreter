@@ -19,7 +19,31 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_lambda_non_capture",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | type_coercion_arithmetic_bool",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_edwin9",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_edwin8",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_lambda_exclusion2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -31,7 +55,19 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_edwin7",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | return_value_test",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_edwin3",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -49,7 +85,25 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_edwin2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_ref2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_edwin6",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_edwin10",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -67,6 +121,18 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_edwin1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_edwin5",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_func_comp1",
             "score": 1,
             "max_score": 1,
@@ -74,6 +140,12 @@
         },
         {
             "name": "Correctness | type_coercion_bool_int",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_edwin4",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -91,6 +163,18 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_edwin0",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_promo8",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_lambda_shadow7",
             "score": 1,
             "max_score": 1,
@@ -98,6 +182,12 @@
         },
         {
             "name": "Correctness | test_lambda_with_val1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_lambda_exclusion",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -158,6 +248,12 @@
         },
         {
             "name": "Incorrectness | test_overload2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_bad_func_ops3",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
