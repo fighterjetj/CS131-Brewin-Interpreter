@@ -1,0 +1,19 @@
+func main() {
+    
+    x = "should not be printed";
+    a = 1;
+    b = 2;
+    c = 3;
+    partial = lambda(ref x) {x = x+1; return lambda(ref y) {y = y+1; return lambda(ref z) {print(x, y, z);};};};
+    partially_applied = partial(a);
+    part2 = partially_applied(b);
+    part2(c);
+    print(a, b, c);
+}
+
+/*
+*OUT*
+233
+233
+*OUT*
+*/

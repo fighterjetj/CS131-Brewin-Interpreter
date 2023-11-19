@@ -1,0 +1,19 @@
+func bar() {
+    print("Hello");
+}
+func foo() {
+  return bar;
+}
+
+func main() {
+    x = foo();
+    print(x == bar);
+    bar();
+}
+
+/*
+*OUT*
+false
+Hello
+*OUT*
+*/

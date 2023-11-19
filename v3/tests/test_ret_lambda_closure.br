@@ -1,0 +1,16 @@
+func foo(ref x) {
+  return lambda() { x = 10; };
+}
+
+func main() {
+  y = 0;
+  z = foo(y);
+  z();
+  print(y);
+}
+
+/*
+*OUT*
+0
+*OUT*
+*/

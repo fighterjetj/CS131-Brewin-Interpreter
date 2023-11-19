@@ -1,5 +1,9 @@
+func foo () {
+    x = 1;
+}
 func main () {
-    main = main <= 1;
+    x = main
+    inputi(x);
 }
 
 /*

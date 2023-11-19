@@ -207,6 +207,7 @@ class Scope:
             elif eval_arg.get_type() == InterpreterBase.BOOL_DEF:
                 final_str += "true" if eval_arg.get_val() else "false"
             else:
+                print(args)
                 self.error(
                     ErrorType.TYPE_ERROR,
                     f"Expected Value, got {eval_arg.get_type()}",

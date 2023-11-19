@@ -7,6 +7,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_return_func",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_func_with_val2",
             "score": 1,
             "max_score": 1,
@@ -62,6 +68,12 @@
         },
         {
             "name": "Correctness | return_value_test",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_lambda_eq",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -127,6 +139,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_ret_lambda_closure",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_edwin5",
             "score": 1,
             "max_score": 1,
@@ -134,6 +152,12 @@
         },
         {
             "name": "Correctness | test_func_comp1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_lambda_capture",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -193,6 +217,18 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | more_ref_tests",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_overload1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Incorrectness | test_func_cond",
             "score": 1,
             "max_score": 1,
@@ -218,6 +254,12 @@
         },
         {
             "name": "Incorrectness | test_bad_ops_call1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_bad_lambda_call",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -254,7 +296,7 @@
         },
         {
             "name": "Incorrectness | test_bad_func_ops3",
-            "score": 1,
+            "score": 0,
             "max_score": 1,
             "visibility": "visible"
         }

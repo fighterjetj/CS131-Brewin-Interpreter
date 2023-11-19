@@ -1,0 +1,10 @@
+func main() {
+  y = lambda(x) { print(x); };
+  y(10, 20);   /* ErrorType.TYPE_ERROR since lambda takes 1 arg */
+}
+
+/*
+*OUT*
+ErrorType.TYPE_ERROR
+*OUT*
+*/
