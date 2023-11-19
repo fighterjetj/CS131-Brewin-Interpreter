@@ -1,0 +1,13 @@
+func foo () {
+    x = 1;
+}
+func main () {
+    x = main
+    inputi(x);
+}
+
+/*
+*OUT*
+ErrorType.TYPE_ERROR
+*OUT*
+*/

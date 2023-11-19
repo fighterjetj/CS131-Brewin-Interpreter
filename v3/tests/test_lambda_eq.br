@@ -1,0 +1,10 @@
+func main() {
+    x = lambda() {y = 10;};
+    print(x==x);
+}
+
+/*
+*OUT*
+true
+*OUT*
+*/

@@ -1,9 +1,8 @@
 func main() {
+    foo();
 }
-
 /*
-*IN*
-*IN*
 *OUT*
+ErrorType.NAME_ERROR
 *OUT*
 */

@@ -1,0 +1,39 @@
+Running 33 tests...
+Running v3/tests/lambda_capture_shadowing.br...  PASSED
+Running v3/tests/test_func_with_val2.br...  PASSED
+Running v3/tests/function_storing_variable_assignment.br...  PASSED
+Running v3/tests/test_lambda_non_capture.br...  PASSED
+Running v3/tests/type_coercion_arithmetic_bool.br...  PASSED
+Running v3/tests/test_edwin9.br... 
+Exception: 
+maximum recursion depth exceeded while calling a Python object
+ FAILED
+Running v3/tests/test_edwin8.br...  PASSED
+Running v3/tests/lambda_function.br...  PASSED
+Running v3/tests/test_edwin7.br...  PASSED
+Running v3/tests/return_value_test.br...  PASSED
+Running v3/tests/test_edwin3.br...  PASSED
+Running v3/tests/function_comparison.br...  PASSED
+Running v3/tests/test_promo1.br...  PASSED
+Running v3/tests/test_edwin2.br...  PASSED
+Running v3/tests/test_ref2.br...  PASSED
+Running v3/tests/test_edwin6.br...  PASSED
+Running v3/tests/test_edwin10.br...  PASSED
+Running v3/tests/pass_by_reference.br...  PASSED
+Running v3/tests/first_class_function.br...  PASSED
+Running v3/tests/test_edwin1.br...  PASSED
+Running v3/tests/test_edwin5.br...  PASSED
+Running v3/tests/test_func_comp1.br...  PASSED
+Running v3/tests/type_coercion_bool_int.br...  PASSED
+Running v3/tests/test_edwin4.br...  PASSED
+Running v3/tests/pass_by_reference_lambda.br...  PASSED
+Running v3/tests/test_edwin0.br...  PASSED
+Running v3/tests/test_lambda_shadow7.br...  PASSED
+Running v3/tests/test_lambda_with_val1.br...  PASSED
+Running v3/fails/test_bad_func_ops1.br...  PASSED
+Running v3/fails/test_bad_func1.br...  PASSED
+Running v3/fails/invalid_function_call.br...  PASSED
+Running v3/fails/function_name_scope.br...  PASSED
+Running v3/fails/test_overload2.br...  PASSED
+32/33 tests passed.
+Total Score:     96.97%

@@ -1,0 +1,32 @@
+func main () {
+    x = 5;
+    y = lambda(x) { print(x); };  /* parameter x shadows captured x */
+    y(10);
+    x = 5;
+    y = lambda() { print(x); };
+    x = 10;
+    y();  /* prints 5 since captured x shadows in-scope x=10 */
+    b = 5;
+    f = lambda(a) { print(a*b); }; /* captures b = 5 by making a copy */
+    b = 7;                         /* has no impact on captured b */
+    f(3);     /* prints 15 */
+    b = 5;
+    f = lambda(a) { b = b + a; print(b); };   
+    f(1);     /* prints 6 */
+    f(10);    /* prints 16 */
+    f(4);     /* prints 20 */
+
+    print(b); /* prints 5, original variable is unchanged */
+}
+
+/*
+*OUT*
+10
+5
+15
+6
+16
+20
+5
+*OUT*
+*/
