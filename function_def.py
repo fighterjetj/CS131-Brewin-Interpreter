@@ -44,7 +44,7 @@ class FunctionDef:
                     scope.add_ref_var(arg.get_name(), args[i].get_ref())
                 # We don't need to load functions again
                 else:
-                    scope.add_new_var(arg.get_name(), args[i].evaluate())
+                    scope.add_new_var(arg.get_name(), args[i].evaluate().copy())
             else:
                 scope.add_new_var(arg.get_name(), args[i].evaluate().copy())
 

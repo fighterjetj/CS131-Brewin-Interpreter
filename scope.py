@@ -6,6 +6,7 @@ from value import Value
 from lambda_def import LambdaDef
 from function_def import FunctionDef
 from value_wrapper import ValueWrapper
+from object_def import ObjectDef
 
 
 class Scope:
@@ -57,6 +58,7 @@ class Scope:
             type(value) != Value
             and type(value) != LambdaDef
             and type(value) != FunctionDef
+            and type(value) != ObjectDef
         ):
             raise Exception(f"Expected savable Value, got {type(value)}")
         if self.trace_output:

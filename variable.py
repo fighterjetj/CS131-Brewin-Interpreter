@@ -26,4 +26,10 @@ class Variable:
     def evaluate(self):
         if self.trace_output:
             print(f"Evaluating {str(self)}")
+        if "." in self.name:
+            name, field = self.name.split(".")
+            var = self.scope.get_var(name)
+            if var.get_type() != InterpreterBase.OBJECT_DEF:
+                raise Exception(f"Expected Object, got {var.get_type()}")
+            return self.scope.get_var(name).get_field(field)
         return self.scope.get_var(self.name)

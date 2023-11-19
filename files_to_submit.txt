@@ -9,6 +9,7 @@ func_call.py
 function_def.py
 interpreterv3.py
 lambda_def.py
+object.py
 readme.txt
 return_type.py
 scope.py
