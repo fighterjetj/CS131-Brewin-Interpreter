@@ -26,7 +26,7 @@ class Assignment:
         if "." in self.name:
             name, field = self.name.split(".")
             var = self.scope.get_var(name)
-            if var.get_type() != InterpreterBase.OBJECT_DEF:
+            if var.get_type() != InterpreterBase.OBJ_DEF:
                 raise Exception(f"Expected Object, got {var.get_type()}")
             self.scope.get_var(name).set_field(field, self.value)
             return

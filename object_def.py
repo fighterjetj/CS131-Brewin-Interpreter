@@ -13,16 +13,16 @@ class ObjectDef:
         self.has_prototype = False
 
     def __load_element(self, element):
-        if type(element) != Element or element.elem_type != InterpreterBase.OBJECT_DEF:
+        if type(element) != Element or element.elem_type != InterpreterBase.OBJ_DEF:
             raise Exception(f"Expected Object Element, got {type(element)}")
 
     def get_field(self, field_name):
-        return self.get_field_ref(field_name).get_value()
+        return self.get_field_ref(field_name).get_val()
 
     def get_prototype(self):
         if not self.has_prototype:
             return None
-        return self.get_field(InterpreterBase.PROTOTYPE_DEF)
+        return self.get_field(PROTO)
 
     def get_field_ref(self, field_name):
         if self.has_field(field_name):
@@ -32,13 +32,13 @@ class ObjectDef:
         self.scope.error(ErrorType.NAME_ERROR, f"Field {field_name} not defined")
 
     def set_field(self, field_name, value):
-        if field_name == InterpreterBase.PROTOTYPE_DEF:
+        if field_name == PROTO:
             if self.trace_output:
                 print(f"Setting prototype of {str(self)} to {str(value)}")
             if value.get_type() == InterpreterBase.NIL_DEF:
                 self.has_prototype = False
                 return
-            if value.get_type() != InterpreterBase.OBJECT_DEF:
+            if value.get_type() != InterpreterBase.OBJ_DEF:
                 self.scope.error(
                     ErrorType.TYPE_ERROR, "Cannot assign prototype to non-object"
                 )
@@ -63,12 +63,13 @@ class ObjectDef:
             self.scope.error(
                 ErrorType.TYPE_ERROR, f"Expected function, got {method.get_type()}"
             )
+            return
         new_scope = scope.Scope(invoke_scope, trace_output=self.trace_output)
         new_scope.add_new_var(InterpreterBase.THIS_DEF, self)
         return method.invoke_func(new_scope, args)
 
     def get_type(self):
-        return InterpreterBase.OBJECT_DEF
+        return InterpreterBase.OBJ_DEF
 
     def evaluate(self):
         return self

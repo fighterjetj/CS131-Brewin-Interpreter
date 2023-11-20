@@ -1,6 +1,7 @@
-from intbase import InterpreterBase
+from intbase import InterpreterBase, ErrorType
 from constants import *
 from element import Element
+import convert_element
 
 
 class MCall:
@@ -16,10 +17,14 @@ class MCall:
             raise Exception(f"Expected Element, got {type(element)}")
         self.objref = element.get(OBJREF)
         self.name = element.get(NAME)
-        self.args = element.get(ARGS)
+        self.args = []
+        for arg in element.get(ARGS):
+            self.args.append(convert_element.convert_element(arg, self.scope))
 
     def evaluate(self):
         obj = self.scope.get_var(self.objref)
-        if obj.get_type() != InterpreterBase.OBJECT_DEF:
-            raise Exception(f"Expected Object, got {obj.get_type()}")
+        if obj.get_type() != InterpreterBase.OBJ_DEF:
+            self.scope.error(
+                ErrorType.TYPE_ERROR, f"Expected Object, got {obj.get_type()}"
+            )
         return obj.invoke_method(self.scope, self.name, self.args)

@@ -146,8 +146,17 @@ class Scope:
             parent_copy = self.parent_scope.copy()
             new_scope = Scope(parent_copy)
         for var in self.__var_map.keys():
-            val = self.__var_map[var].get_val()
-            new_scope.add_new_var(var, deepcopy(val))
+            val_ref = self.__var_map[var]
+            val = val_ref.get_val()
+            val_type = val.get_type()
+            if (
+                val_type == InterpreterBase.OBJ_DEF
+                or val_type == InterpreterBase.FUNC_DEF
+                or val_type == InterpreterBase.LAMBDA_DEF
+            ):
+                new_scope.add_ref_var(var, val_ref)
+            else:
+                new_scope.add_new_var(var, deepcopy(val))
         for func in self.__functions.keys():
             for num_args in self.__functions[func]:
                 new_scope.add_new_func(

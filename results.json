@@ -1,337 +1,235 @@
 {
     "tests": [
         {
-            "name": "Correctness | lambda_capture_shadowing",
+            "name": "Correctness | test_obj_capture3",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_return_func",
+            "name": "Correctness | test_pass_by_ref1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_func_with_val2",
+            "name": "Correctness | test_primitive_capture",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | function_storing_variable_assignment",
+            "name": "Correctness | test_lambda_capture1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_lambda_non_capture",
+            "name": "Correctness | test_obj_capture2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | type_coercion_arithmetic_bool",
+            "name": "Correctness | test_proto_lookup",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin9",
+            "name": "Correctness | test_mult_protos",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin8",
+            "name": "Correctness | test_assign_objs",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_lambda_exclusion2",
+            "name": "Correctness | test_many_proto",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_func_ref_with_lambda",
+            "name": "Correctness | test_proto_method2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | lambda_function",
+            "name": "Correctness | test_reassign_proto",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_partial",
+            "name": "Correctness | test_shadow_method",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin7",
+            "name": "Correctness | test_proto1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | return_value_test",
+            "name": "Correctness | test_pass_by_val1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_lambda_eq",
+            "name": "Correctness | test_proto2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin3",
+            "name": "Correctness | test_pass_by_val2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | function_comparison",
+            "name": "Correctness | test_comp_obj",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_promo1",
+            "name": "Correctness | test_after_proto_change",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin2",
+            "name": "Correctness | test_proto_method1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_ref2",
+            "name": "Correctness | test_proto_shadow",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin6",
+            "name": "Correctness | test_obj_capture1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin10",
+            "name": "Correctness | test_obj_ref_closure",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_func_comp",
+            "name": "Correctness | test_same_name_field",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | pass_by_reference",
+            "name": "Correctness | test_obj_copy_primitives",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_lambda_comp",
+            "name": "Correctness | test_lambda_capture3",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | first_class_function",
+            "name": "Correctness | test_access_this",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin1",
+            "name": "Correctness | test_pass_by_ref2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_ret_lambda_closure",
+            "name": "Correctness | test_proto_this",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin5",
+            "name": "Incorrectness | test_call_nonexistant_method",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_func_comp1",
+            "name": "Incorrectness | test_access_undef_proto",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_lambda_capture",
+            "name": "Incorrectness | test_proto_lookup_fail",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | type_coercion_bool_int",
+            "name": "Incorrectness | test_access_nonexistant_field",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin4",
+            "name": "Incorrectness | test_nonobj_proto",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | mega_test",
+            "name": "Incorrectness | test_reassign_proto",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | pass_by_reference_lambda",
+            "name": "Incorrectness | test_access_field_nonobj",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_edwin0",
+            "name": "Incorrectness | test_obj_capture",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_promo8",
+            "name": "Incorrectness | test_proto_nil",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_lambda_shadow7",
+            "name": "Incorrectness | test_call_field",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
-            "name": "Correctness | test_lambda_with_val1",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Correctness | test_lambda_capture2",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Correctness | test_lambda_exclusion",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Correctness | more_ref_tests",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_bad_ref",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_overload1",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_func_cond",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_bad_func_ops1",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_bad_ref2",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_bad_ops_call2",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_bad_func1",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_bad_ops_call1",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_bad_lambda_call",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_bad_func_ops2",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_invalid_func_name",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | invalid_function_call",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | function_name_scope",
-            "score": 1,
-            "max_score": 1,
-            "visibility": "visible"
-        },
-        {
-            "name": "Incorrectness | test_overload2",
+            "name": "Incorrectness | test_proto_this",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"

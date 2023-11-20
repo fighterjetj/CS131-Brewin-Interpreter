@@ -2,7 +2,7 @@ func foo() {
     return 10;
 }
 
-func bar() {
+func main() {
   x = @;
   y = 11;
   x.foo = 5;   /* this is legal; the two foos are distinct */
