@@ -1,0 +1,11 @@
+func foo() { return foo; }
+
+func main() {
+print(foo() == foo());
+}
+
+/*
+*OUT*
+false
+*OUT*
+*/

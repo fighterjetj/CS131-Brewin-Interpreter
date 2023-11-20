@@ -1,0 +1,15 @@
+func main() {
+    f = lambda(x) {
+      return lambda(y) {
+        return x + y;
+      };
+    };
+    t = f(5);
+    print(t(6));
+}
+
+/*
+*OUT*
+11
+*OUT*
+*/

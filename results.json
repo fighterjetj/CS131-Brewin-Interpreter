@@ -67,6 +67,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_partial",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_edwin7",
             "score": 1,
             "max_score": 1,
@@ -122,6 +128,12 @@
         },
         {
             "name": "Correctness | test_edwin10",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_func_comp",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -260,6 +272,12 @@
         },
         {
             "name": "Incorrectness | test_bad_func_ops1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_bad_ref2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
