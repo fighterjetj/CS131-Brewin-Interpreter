@@ -1,6 +1,7 @@
 from intbase import InterpreterBase, ErrorType
 from constants import *
 from element import Element
+import scope
 import convert_element
 
 
@@ -23,8 +24,12 @@ class MCall:
 
     def evaluate(self):
         obj = self.scope.get_var(self.objref)
+        obj_ref = self.scope.get_var_ref(self.objref)
         if obj.get_type() != InterpreterBase.OBJ_DEF:
             self.scope.error(
                 ErrorType.TYPE_ERROR, f"Expected Object, got {obj.get_type()}"
             )
-        return obj.invoke_method(self.scope, self.name, self.args)
+        # Adding this to the scope
+        this_scope = scope.Scope(self.scope, trace_output=self.trace_output)
+        this_scope.add_ref_var(InterpreterBase.THIS_DEF, obj_ref)
+        return obj.invoke_method(this_scope, self.name, self.args)

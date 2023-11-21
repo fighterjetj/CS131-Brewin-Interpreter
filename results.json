@@ -13,6 +13,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_obj1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_primitive_capture",
             "score": 1,
             "max_score": 1,
@@ -20,6 +26,12 @@
         },
         {
             "name": "Correctness | test_lambda_capture1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto2 copy",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -67,6 +79,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_proto1 copy",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_shadow_method",
             "score": 1,
             "max_score": 1,
@@ -80,6 +98,12 @@
         },
         {
             "name": "Correctness | test_pass_by_val1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj10",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -116,6 +140,12 @@
         },
         {
             "name": "Correctness | test_proto_shadow",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -158,6 +188,12 @@
         },
         {
             "name": "Correctness | test_pass_by_ref2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj3",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
