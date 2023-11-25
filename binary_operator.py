@@ -111,9 +111,16 @@ class BinaryOperator:
         return Value(not self.__eval_greater().get_val())
 
     def __eval_bool(self):
-        self.left = self.left.converted_type(InterpreterBase.BOOL_DEF)
-        self.right = self.right.converted_type(InterpreterBase.BOOL_DEF)
-        if (not self.left) or (not self.right):
+        if self.left.get_type() == InterpreterBase.INT_DEF:
+            self.left = self.left.converted_type(InterpreterBase.BOOL_DEF)
+        elif self.left.get_type() != InterpreterBase.BOOL_DEF:
+            self.scope.error(
+                ErrorType.TYPE_ERROR,
+                "Cannot perform boolean operations on non-boolean values",
+            )
+        if self.right.get_type() == InterpreterBase.INT_DEF:
+            self.right = self.right.converted_type(InterpreterBase.BOOL_DEF)
+        elif self.right.get_type() != InterpreterBase.BOOL_DEF:
             self.scope.error(
                 ErrorType.TYPE_ERROR,
                 "Cannot perform boolean operations on non-boolean values",

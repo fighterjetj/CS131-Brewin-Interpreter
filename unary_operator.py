@@ -32,13 +32,16 @@ class UnaryOperator:
             return self.__eval_neg()
 
     def __eval_not(self):
-        value = self.value.converted_type(InterpreterBase.BOOL_DEF)
+        value = self.value
+        if self.value.get_type() == InterpreterBase.INT_DEF:
+            value = self.value.converted_type(InterpreterBase.BOOL_DEF)
+        elif self.value.get_type() != InterpreterBase.BOOL_DEF:
+            self.scope.error(
+                ErrorType.TYPE_ERROR,
+                "Cannot perform boolean operations on non-boolean values",
+            )
         if value:
             return Value(not value.get_val())
-        self.scope.error(
-            ErrorType.TYPE_ERROR,
-            "Cannot perform boolean operations on non-boolean values",
-        )
 
     def __eval_neg(self):
         val_type = self.value.get_type()

@@ -211,6 +211,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Incorrectness | test_this_ref",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Incorrectness | test_access_undef_proto",
             "score": 1,
             "max_score": 1,

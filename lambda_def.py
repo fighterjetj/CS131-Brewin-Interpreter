@@ -13,9 +13,10 @@ class LambdaDef(FunctionDef):
 
     def invoke_func(self, scope, args):
         # The scope the lambda is invoked in is at the very outside - make a shallow copy to avoid cyclical scoping
+        base_scope = self.scope.get_base_scope()
         self.scope.add_base_scope(scope.shallow_copy())
         returned_val = super().invoke_func(self.scope, args)
-        self.scope.parent_scope = None
+        base_scope.parent_scope = None
         return returned_val
 
     def get_type(self):
