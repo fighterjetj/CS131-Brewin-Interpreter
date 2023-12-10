@@ -1,0 +1,21 @@
+func foo(ref x) {
+    x();
+}
+
+func main() {
+    x = 0;
+    y = lambda() { x = x + 1; print(x); };
+    foo(y);
+    foo(y);
+    y();
+    print(x);
+}
+
+/*
+*OUT*
+1
+2
+3
+0
+*OUT*
+*/

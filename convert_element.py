@@ -12,6 +12,8 @@ import return_type
 import arg
 import func_call
 import variable
+import object_def
+import mcall
 
 
 def convert_element(element, scope=None):
@@ -42,4 +44,8 @@ def convert_element(element, scope=None):
         return variable.Variable(scope, element)
     if elem_type == InterpreterBase.FCALL_DEF:
         return func_call.FuncCall(scope, element)
+    if elem_type == InterpreterBase.OBJ_DEF:
+        return object_def.ObjectDef(element)
+    if elem_type == InterpreterBase.MCALL_DEF:
+        return mcall.MCall(scope, element)
     raise Exception(f"Unknown element type {elem_type}")

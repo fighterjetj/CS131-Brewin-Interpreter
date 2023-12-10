@@ -63,6 +63,7 @@ class BinaryOperator:
             if (
                 left_type == InterpreterBase.FUNC_DEF
                 or left_type == InterpreterBase.LAMBDA_DEF
+                or left_type == InterpreterBase.OBJ_DEF
             ):
                 return Value(self.left is self.right)
             return Value(self.left.get_val() == self.right.get_val())

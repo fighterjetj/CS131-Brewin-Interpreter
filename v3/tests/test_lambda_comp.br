@@ -1,0 +1,16 @@
+func main() {
+    x = lambda() {a = 0;};
+    y = x;
+    z = lambda() {a = 0;};
+    print(y==x);
+    print(x==x);
+    print(z==x);
+}
+
+/*
+*OUT*
+true
+true
+false
+*OUT*
+*/

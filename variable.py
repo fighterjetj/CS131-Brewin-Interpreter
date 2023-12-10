@@ -1,6 +1,6 @@
 from constants import *
 from element import Element
-from intbase import InterpreterBase
+from intbase import InterpreterBase, ErrorType
 
 
 class Variable:
@@ -26,4 +26,10 @@ class Variable:
     def evaluate(self):
         if self.trace_output:
             print(f"Evaluating {str(self)}")
+        if "." in self.name:
+            name, field = self.name.split(".")
+            var = self.scope.get_var(name)
+            if var.get_type() != InterpreterBase.OBJ_DEF:
+                self.scope.error(ErrorType.TYPE_ERROR, f"{name} is not an object")
+            return self.scope.get_var(name).get_field(field)
         return self.scope.get_var(self.name)

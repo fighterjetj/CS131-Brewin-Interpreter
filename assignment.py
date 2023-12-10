@@ -23,6 +23,13 @@ class Assignment:
         if self.trace_output:
             print(f"Evaluating {str(self)}")
         self.value = self.value.evaluate()
+        if "." in self.name:
+            name, field = self.name.split(".")
+            var = self.scope.get_var(name)
+            if var.get_type() != InterpreterBase.OBJ_DEF:
+                raise Exception(f"Expected Object, got {var.get_type()}")
+            self.scope.get_var(name).set_field(field, self.value)
+            return
         self.scope.set_var(self.name, self.value)
 
     def __str__(self):

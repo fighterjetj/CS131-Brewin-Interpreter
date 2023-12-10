@@ -1,0 +1,20 @@
+func bar(ref x) {
+  x = x + 1;
+}
+
+func foo(ref a) {
+  a = "hi";
+  bar(a);
+}
+
+func main() {
+  b = 5;
+  foo(b);
+  print(b);
+}
+
+/*
+*OUT*
+ErrorType.TYPE_ERROR
+*OUT*
+*/

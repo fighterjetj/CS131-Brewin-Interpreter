@@ -29,6 +29,8 @@ INPUTI = "inputi"
 INPUTS = "inputs"
 PRINT = "print"
 CONDITION = "condition"
+OBJREF = "objref"
+PROTO = "proto"
 
 # Binary Operators
 BINARY_COMP = [
