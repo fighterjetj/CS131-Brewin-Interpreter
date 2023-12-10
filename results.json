@@ -1,7 +1,19 @@
 {
     "tests": [
         {
+            "name": "Correctness | test_obj4",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_obj_capture3",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_deep_nested_pass_by_ref",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -13,7 +25,37 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_proto10",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_obj1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto_lambda_share_state2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto11",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto_lambda_share_state",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto1 copy 2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -25,7 +67,19 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_obj5",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_lambda_capture1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj_recursive",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -43,7 +97,19 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_obj_dynamic_method_2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_proto_lookup",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto_long_inheritance",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -73,13 +139,61 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_proto4",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj_change_itself",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj12",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto_this_is_ref",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto5",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_reassign_proto",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_obj10 copy",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_proto1 copy",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj13",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj_inside_function",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -97,13 +211,49 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_proto_this_itself",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_pass_by_val1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_proto6",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj8",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto_same_name_different_type_proto",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj_while_loop",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_obj10",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_deep_return_by_value",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -127,6 +277,12 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_proto3",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_after_proto_change",
             "score": 1,
             "max_score": 1,
@@ -139,7 +295,37 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_proto7",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj_function_chain",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj1 copy",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_proto_shadow",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj9",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj11",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -151,13 +337,49 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_proto12",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj6",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_cap1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_obj_capture1",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_obj3 copy",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto8",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_obj_ref_closure",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto_while_loop",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -181,6 +403,30 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_obj7",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_obj2 copy",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto9",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto2 copy 2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_access_this",
             "score": 1,
             "max_score": 1,
@@ -199,7 +445,31 @@
             "visibility": "visible"
         },
         {
+            "name": "Correctness | test_obj_dynamic_method",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_proto13",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Correctness | test_nested_pass_by_ref",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Correctness | test_proto_this",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_obj4",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -212,6 +482,24 @@
         },
         {
             "name": "Incorrectness | test_this_ref",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_obj1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_obj5",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_proto4",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -241,7 +529,25 @@
             "visibility": "visible"
         },
         {
+            "name": "Incorrectness | test_proto5",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Incorrectness | test_reassign_proto",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_proto1",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_proto_change_this_3",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -253,7 +559,37 @@
             "visibility": "visible"
         },
         {
+            "name": "Incorrectness | test_proto2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_proto3",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Incorrectness | test_obj_capture",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_proto_change_this_2",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_proto_change_this",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_obj2",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
@@ -265,7 +601,31 @@
             "visibility": "visible"
         },
         {
+            "name": "Incorrectness | test_obj6",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_proto_same_name_different_type_child",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_obj7",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
             "name": "Incorrectness | test_call_field",
+            "score": 1,
+            "max_score": 1,
+            "visibility": "visible"
+        },
+        {
+            "name": "Incorrectness | test_obj3",
             "score": 1,
             "max_score": 1,
             "visibility": "visible"
