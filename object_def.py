@@ -64,9 +64,7 @@ class ObjectDef:
                 ErrorType.TYPE_ERROR, f"Expected function, got {method.get_type()}"
             )
             return
-        new_scope = scope.Scope(invoke_scope, trace_output=self.trace_output)
-        new_scope.add_new_var(InterpreterBase.THIS_DEF, self)
-        return method.invoke_func(new_scope, args)
+        return method.invoke_func(invoke_scope, args)
 
     def get_type(self):
         return InterpreterBase.OBJ_DEF

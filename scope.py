@@ -50,7 +50,7 @@ class Scope:
     def add_ref_var(self, var_name, value):
         # If this isn't a value wrapper, it isn't a ref
         if type(value) != ValueWrapper:
-            raise Exception("Expected ValueWrapper")
+            raise Exception(f"Expected ValueWrapper, got {type(value)}")
         self.__var_map[var_name] = value
 
     def set_var(self, var_name, value):

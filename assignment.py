@@ -1,6 +1,7 @@
 from element import Element
 from constants import *
 import convert_element
+from intbase import ErrorType
 
 
 class Assignment:
@@ -27,7 +28,9 @@ class Assignment:
             name, field = self.name.split(".")
             var = self.scope.get_var(name)
             if var.get_type() != InterpreterBase.OBJ_DEF:
-                raise Exception(f"Expected Object, got {var.get_type()}")
+                self.scope.error(
+                    ErrorType.TYPE_ERROR, f"Cannot assign field to non-object"
+                )
             self.scope.get_var(name).set_field(field, self.value)
             return
         self.scope.set_var(self.name, self.value)
