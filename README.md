@@ -1,4 +1,6 @@
-# CS 131 Fall 2023 - Project Autograder
+# CS 131 Fall 2023 - Project
+
+**This is my implementation of projects 1 through 4 for CS 131, Fall 2023.  In this class we implemented a fully functioned interpreter for Brewin, a language which supports loops, variable assignments, lambdas, closures, objects, among other things.  The specifics of the project can be found in the Fall 23 course website: https://ucla-cs-131.github.io/fall-23-website/**
 
 Hi there! This is a repo that contains an open-source subset of the autograder we'll be using for [CS 131 - Fall 2023](https://ucla-cs-131.github.io/fall-23-website/)'s course-long project: making an interpreter.
 
